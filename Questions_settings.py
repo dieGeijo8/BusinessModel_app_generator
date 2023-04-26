@@ -38,6 +38,7 @@ class Questions_settings:
 
 
 
+
     # save the new relevance value in the reendering session state variable
     @staticmethod
     def relevance_callback(page, tab, question_code):
