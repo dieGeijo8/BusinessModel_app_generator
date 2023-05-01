@@ -6,7 +6,9 @@ class Questions_settings:
     @staticmethod
     def get_full_question_code(page, tab, question_code):
         return str(page) + '_' + str(tab) + '_' + str(question_code)
-    
+
+
+
     # support method in Session_state_variables - for first setting
     @staticmethod
     def sessionstate_set_question_data_values(company_data, page, tab, question_code):
@@ -27,6 +29,10 @@ class Questions_settings:
         del st.session_state['rendering_relevance' + Questions_settings.get_full_question_code(page, tab, question_code)]
 
 
+    #support method - to get the list of values names collected for each question
+    @staticmethod
+    def get_question_values_name():
+        return ['Stage', 'Remarks', 'Relevance']
 
     # support method in FirestoreAPI - for submitting
     @staticmethod

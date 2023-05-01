@@ -48,7 +48,7 @@ class Session_state_variables:
                     Questions_settings.sessionstate_delete_question_data_values(page, tab, question_code)
 
 
-    # initialize the session state variable overview - dictionary with the follwoing structure: 'Current' - tab(key) - score, 'Plan' - tab(key) - score
+    # initialize the session state variable overview - dictionary with the following structure: 'Current' - tab(key) - score, 'Plan' - tab(key) - score
     @staticmethod
     def initialize_company_overview_session_state():
         local_model_descriptor = return_model_descriptor_copy()
