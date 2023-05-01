@@ -1,5 +1,5 @@
-from Configuration import return_model_full_descriptor_copy, tab_subs_titles
-from Questions_settings import Questions_settings
+from Configuration.Configuration import return_model_full_descriptor_copy, tab_subs_titles
+from Questions_settings.Questions_settings import Questions_settings
 import streamlit as st
 
 class Page_display:

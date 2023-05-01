@@ -2,7 +2,7 @@ import pandas as pd
 import re
 import streamlit as st
 
-excel_file_directory = '15M.xlsx'
+excel_file_directory = 'Configuration/15M.xlsx' #this is now the 'configuration file'
 
 #pages - here it is manually, it should be via input
 pages = ['1', '2', '3', '4', '5']
@@ -134,9 +134,22 @@ def excel_get_full_model_description():
 
 
 
+def excel_get_overview_description():
+    df = pd.read_excel(excel_file_directory, sheet_name='Overview', skiprows=3, usecols='A:D,L')
+    df.columns = ['Section', 'Code', 'Description', 'NCode', 'Weight']
+
+    df = df.astype({'Section': str})
+    df = df.dropna(subset=['NCode'])
+    df = df.reset_index(drop=True)
+
+    return df
+
+
+
 #GLOBAL VARIABLES - define the model
 model_descriptor = excel_get_model_description()
 model_full_descriptor = excel_get_full_model_description()
+model_ovw_descriptor = excel_get_overview_description()
 
 #methods to get copies of global variables
 @st.cache_data
@@ -146,3 +159,7 @@ def return_model_descriptor_copy():
 @st.cache_data
 def return_model_full_descriptor_copy():
     return model_full_descriptor.copy()
+
+@st.cache_data
+def return_model_ovw_descriptor_copy():
+    return model_ovw_descriptor.copy()

@@ -1,6 +1,6 @@
 import streamlit as st
-from Session_state_variables import Session_state_variables
-from FirestoreAPI import FirestoreAPI
+from SessionState.Session_state_variables import Session_state_variables
+from Firestore.FirestoreAPI import FirestoreAPI
 
 #add the written company to the company list to make it selectable from the select box
 def callback_textinput():
@@ -15,11 +15,13 @@ def callback_selectbox():
 
     if st.session_state.company != '':
         Session_state_variables.delete_company_session_state()
+        Session_state_variables.delete_company_overview_session_state()
 
     st.session_state.company = st.session_state.selectbox_value
     st.session_state.first_selectbox_value = st.session_state.company_list.index(st.session_state.company)
 
     Session_state_variables.initialize_company_session_state()
+    Session_state_variables.initialize_company_overview_session_state()
 
 
 
@@ -40,5 +42,5 @@ if __name__ == "__main__" :
     st.text_input('To register a new company, write the name here.', value=st.session_state.first_textinput_value,
                   on_change=callback_textinput, key='textinput_value')
 
-    st.button('Submit', on_click=FirestoreAPI.submit_company_data)
+    st.button('Submit', on_click=FirestoreAPI.submit_button)
 

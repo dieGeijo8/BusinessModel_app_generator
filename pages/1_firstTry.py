@@ -1,4 +1,4 @@
-from Page_display import Page_display
+from PagesDisplay.Page_display import Page_display
 
 if __name__ == "__main__":
 

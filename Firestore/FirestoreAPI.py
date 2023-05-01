@@ -1,14 +1,14 @@
 import google.cloud.firestore
 import streamlit as st
-from Configuration import return_model_descriptor_copy, return_model_full_descriptor_copy
-from Questions_settings import Questions_settings
+from Configuration.Configuration import return_model_descriptor_copy
+from Questions_settings.Questions_settings import Questions_settings
 
 class FirestoreAPI:
 
     #support method - object to connect with a collection of the db
     @staticmethod
     def get_company_collection():
-        db = google.cloud.firestore.Client.from_service_account_json("firestore_key.json")
+        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
 
         company_collection = db.collection(st.session_state.company)
         return company_collection
@@ -17,7 +17,7 @@ class FirestoreAPI:
     @staticmethod
     def get_company_list():
         collections_names = ['']
-        db = google.cloud.firestore.Client.from_service_account_json("firestore_key.json")
+        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
 
         for collection in db.collections():
 
@@ -100,3 +100,45 @@ class FirestoreAPI:
             company_document = company_collection.document(page)
 
             company_document.set(company_data[page])
+
+
+
+    #get the plan values of the ovw
+    @staticmethod
+    def get_company_overview_plan():
+        company_collection = FirestoreAPI.get_company_collection()
+
+        company_ovw_document = company_collection.document('overview')
+
+        local_model_descriptor = return_model_descriptor_copy()
+
+        try:
+            ovw_plan_values = company_ovw_document.get().to_dict()
+
+            return ovw_plan_values['Plan']
+
+        except:
+            tabs = []
+
+            for page in local_model_descriptor.keys():
+                for tab in local_model_descriptor[page].keys():
+                    tabs.append(tab)
+
+            return dict(zip(tabs, [0]*len(tabs)))
+
+    #submit the current value of the session state variable ovw
+    @staticmethod
+    def submit_company_overview():
+        company_collection = FirestoreAPI.get_company_collection()
+
+        company_ovw_document = company_collection.document('overview')
+        company_ovw_document.set(st.session_state['overview'])
+
+
+
+    #function for submit button
+    @staticmethod
+    def submit_button():
+        FirestoreAPI.submit_company_data()
+
+        FirestoreAPI.submit_company_overview()
