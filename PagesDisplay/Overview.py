@@ -1,22 +1,40 @@
 import streamlit as st
-from Configuration.Configuration import return_model_ovw_descriptor_copy
-from SessionState.Session_state_variables import Session_state_variables
+from SessionState.Session_state_dataframes import Session_state_dataframes
+from PagesDisplay.Visualizations import Visualizations
+from Configuration.Configuration import pages
+
 class Overview:
 
     @staticmethod
     def display_overview():
-        # update the ovw values
-        Session_state_variables.initialize_company_overview_session_state()
-        # get the ovw part that doesn't change
-        df_ovw = return_model_ovw_descriptor_copy()
+        df_ovw = Session_state_dataframes.get_ovw_df_copy()
 
+        tabs = st.tabs(['Data', 'Dashboard'])
 
-        df_ovw['Current'] = [st.session_state['overview']['Current'][tab] for tab in st.session_state['overview']['Current'].keys()]
-        df_ovw['Plan'] = [st.session_state['overview']['Plan'][tab] for tab in st.session_state['overview']['Plan'].keys()]
+        with tabs[0]:
+            #display the df
+            start = 0
+            pages_titles_index = 0
 
-        #reorder columns
-        df_ovw = df_ovw[['Section', 'Code', 'Description', 'NCode', 'Current', 'Plan', 'Weight']]
+            for j in range(len(df_ovw)):
 
-        #display the df
-        st.experimental_data_editor(df_ovw, key='data_editor_ovw')
+                if j == 0:
+                    st.header(pages[pages_titles_index])
+                    pages_titles_index += 1
+
+                elif df_ovw.loc[j, 'Tab'][:1] != df_ovw.loc[j - 1, 'Tab'][:1] or j == len(df_ovw) - 1:
+
+                    st.experimental_data_editor(df_ovw.iloc[start:j], key=str(j) + '_data_editor_ovw')
+                    start = j
+
+                    if pages_titles_index <= (len(pages) - 1):
+
+                        st.header(pages[pages_titles_index])
+                        pages_titles_index += 1
+
+        with tabs[1]:
+
+            bp = Visualizations.overview_barplot()
+
+            st.plotly_chart(bp, theme="streamlit", use_container_width=True)
 

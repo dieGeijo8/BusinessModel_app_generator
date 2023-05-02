@@ -26,7 +26,7 @@ class Page_display:
                         st.header(tab_subs_titles[i])
                         i += 1
 
-                    if question_code_index != 0 and question_code[:2] != question_codes[question_code_index - 1][:2] and i <= 3:
+                    if question_code_index != 0 and question_code[:2] != question_codes[question_code_index - 1][:2] and i <= (len(tab_subs_titles) - 1):
 
                         st.header(tab_subs_titles[i])
                         i += 1

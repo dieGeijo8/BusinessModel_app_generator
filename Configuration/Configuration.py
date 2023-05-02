@@ -133,13 +133,16 @@ def excel_get_full_model_description():
     #########################
 
 
-
+#the new information that the app gets here is a description per each tab and a weight for each tab score
+#it returns a df with the following columns: tab - description
 def excel_get_overview_description():
     df = pd.read_excel(excel_file_directory, sheet_name='Overview', skiprows=3, usecols='A:D,L')
-    df.columns = ['Section', 'Code', 'Description', 'NCode', 'Weight']
+    df.columns = ['Tab', 'Code', 'Description', 'NCode', 'Weight']
 
-    df = df.astype({'Section': str})
+    df = df.astype({'Tab': str})
     df = df.dropna(subset=['NCode'])
+
+    df = df.drop(['Code', 'NCode', 'Weight'], axis=1)
     df = df.reset_index(drop=True)
 
     return df

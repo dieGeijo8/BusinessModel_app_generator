@@ -2,6 +2,7 @@ import streamlit as st
 from Configuration.Configuration import return_model_descriptor_copy
 from Firestore.FirestoreAPI import FirestoreAPI
 from Questions_settings.Questions_settings import Questions_settings
+from Questions_settings.Standard_extensions import Checkbox
 
 class Session_state_variables:
 
@@ -61,8 +62,10 @@ class Session_state_variables:
 
                 for question_code in local_model_descriptor[page][tab]:
 
-                    question_values = Questions_settings.get_question_data_values(page, tab, question_code)
-                    tab_score.append(question_values['Stage'])
+                    if Checkbox.checkbox_disable_othervalues(page, tab, question_code) != True:  # related to checkbox standard extension
+
+                        question_values = Questions_settings.get_question_data_values(page, tab, question_code)
+                        tab_score.append(question_values['Stage'])
 
                 scores_per_tab[tab] = round(sum(tab_score) / len(tab_score), 1)
 
