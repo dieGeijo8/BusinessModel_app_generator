@@ -1,6 +1,7 @@
 from SessionState.Session_state_dataframes import Session_state_dataframes
 import plotly.express as px
 import plotly.graph_objects as go
+from Questions_settings.Standard_extensions import Plan
 import numpy as np
 
 
@@ -55,7 +56,11 @@ class Visualizations:
         df = Session_state_dataframes.get_ovw_df_aggregated_by_page_copy()
 
         #-------------------------------------------------------------
-        fig = px.bar(df, x='Page', y=['Current', 'Plan'], color_discrete_sequence=['#42A7B3', '#FFC000'], barmode='group')#, histfunc='avg')
+        y_list = ['Current']
+        #standard extension
+        Plan.add_plan_to_column_list(y_list)
+
+        fig = px.bar(df, x='Page', y=y_list, color_discrete_sequence=['#42A7B3', '#FFC000'], barmode='group')#, histfunc='avg')
         fig.update_layout(yaxis_range=[-0.5,5.5], bargap=0.5)
         #----------------------------section colors ---------------------------
         colors = ['#43B02A', '#4E0CB0', '#2DD6E2', '#037367', '#F6009E']
@@ -67,13 +72,15 @@ class Visualizations:
         #----------------------------------------------------------------------
         #--------------------------average lines-------------------------------
         curr_avg = sum(df['Current'].tolist()) / len(df['Current'].tolist())
-        plan_avg = sum(df['Plan'].tolist()) / len(df['Plan'].tolist())
+        # plan_avg = sum(df['Plan'].tolist()) / len(df['Plan'].tolist())
         fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
                       x0=0, x1=1, xref="paper", y0=curr_avg, y1=curr_avg, yref="y")
         fig.add_annotation(text='Avg. current stage', x='5', y=curr_avg+0.1, showarrow=False)
-        fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
-                      x0=0, x1=1, xref="paper", y0=plan_avg, y1=plan_avg, yref="y")
-        fig.add_annotation(text='Avg. planned stage', x='5', y=plan_avg + 0.1, showarrow=False)
+
+        Plan.ovw_barplot_plan_lines(fig, df)
+        # fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
+        #               x0=0, x1=1, xref="paper", y0=plan_avg, y1=plan_avg, yref="y")
+        # fig.add_annotation(text='Avg. planned stage', x='5', y=plan_avg + 0.1, showarrow=False)
         #-----------------------------------------------------------------------
 
         return fig

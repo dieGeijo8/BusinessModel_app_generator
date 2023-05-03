@@ -3,7 +3,7 @@ import streamlit as st
 from Questions_settings.Questions_settings import Questions_settings
 from Configuration.Configuration import return_model_descriptor_copy, return_model_ovw_descriptor_copy
 from SessionState.Session_state_variables import Session_state_variables
-from Questions_settings.Standard_extensions import Checkbox, Weights
+from Questions_settings.Standard_extensions import Checkbox, Weights, Plan
 
 
 class Session_state_dataframes:
@@ -45,26 +45,29 @@ class Session_state_dataframes:
 
         return pd.DataFrame.from_dict(page_data)
 
-    #get the updated ovw df
+    #get the updated ovw df with the following columns - 'Tab', 'Description', 'Current', 'Plan', and eventually 'Weight'
     @staticmethod
     def get_ovw_df_copy():
-        # update the ovw values
-        Session_state_variables.initialize_company_overview_session_state()
-        # get the ovw part that doesn't change
+        # get the ovw part that doesn't change - tab + description
         df_ovw = return_model_ovw_descriptor_copy()
 
+        # standard extensions
         Weights.add_weights_column(df_ovw)
 
         df_ovw['Current'] = [st.session_state['overview']['Current'][tab] for tab in
                              st.session_state['overview']['Current'].keys()]
-        df_ovw['Plan'] = [st.session_state['overview']['Plan'][tab] for tab in
-                          st.session_state['overview']['Plan'].keys()]
+
+        # standard extension
+        Plan.add_plan_to_ovw(df_ovw)
 
         # reorder columns
-        ordered_column_list = ['Tab', 'Description', 'Current', 'Plan']
-        Weights.add_weights_to_columnslist(ordered_column_list)
+        ordered_columns_list = ['Tab', 'Description', 'Current']
 
-        df_ovw = df_ovw[ordered_column_list]
+        # standard extensions
+        Plan.add_plan_to_column_list(ordered_columns_list)
+        Weights.add_weights_to_columnslist(ordered_columns_list)
+
+        df_ovw = df_ovw[ordered_columns_list]
 
         return df_ovw.copy()
 
@@ -85,8 +88,8 @@ class Session_state_dataframes:
 
         return_df['Current'] = [ovw_df_aggregated_by_page[page]['Current'] for page in ovw_df_aggregated_by_page.keys()]
 
-        return_df['Plan'] = [ovw_df_aggregated_by_page[page]['Plan'] for page in ovw_df_aggregated_by_page.keys()]
-
+        #standard extension
+        Plan.add_plan_to_df_for_vis(ovw_df_aggregated_by_page, return_df)
         return return_df.copy()
 
 

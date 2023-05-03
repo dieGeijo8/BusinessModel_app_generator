@@ -124,7 +124,7 @@ class FirestoreAPI:
                 for tab in local_model_descriptor[page].keys():
                     tabs.append(tab)
 
-            return dict(zip(tabs, [0]*len(tabs)))
+            return dict(zip(tabs, [1]*len(tabs)))
 
     #submit the current value of the session state variable ovw
     @staticmethod

@@ -2,7 +2,7 @@ import streamlit as st
 from Configuration.Configuration import return_model_descriptor_copy
 from Firestore.FirestoreAPI import FirestoreAPI
 from Questions_settings.Questions_settings import Questions_settings
-from Questions_settings.Standard_extensions import Checkbox
+from Questions_settings.Standard_extensions import Checkbox, Plan
 
 class Session_state_variables:
 
@@ -49,7 +49,7 @@ class Session_state_variables:
                     Questions_settings.sessionstate_delete_question_data_values(page, tab, question_code)
 
 
-    # initialize the session state variable overview - dictionary with the following structure: 'Current' - tab(key) - score, 'Plan' - tab(key) - score
+    # initialize the session state variable overview - dictionary with the following structure: 'Current' - tab: score, and if setted 'Plan' - tab: score
     @staticmethod
     def initialize_company_overview_session_state():
         local_model_descriptor = return_model_descriptor_copy()
@@ -69,13 +69,39 @@ class Session_state_variables:
 
                 scores_per_tab[tab] = round(sum(tab_score) / len(tab_score), 1)
 
-        plans_per_tab = FirestoreAPI.get_company_overview_plan()
 
         ovw = {}
         ovw['Current'] = scores_per_tab
-        ovw['Plan'] = plans_per_tab
 
+        #standard extension
+        Plan.initialize_plan(ovw)
+        print(ovw)
         st.session_state['overview'] = ovw
+
+    # update the current values of the session state ovw dictionary
+    @staticmethod
+    def update_company_overview_session_state():
+        local_model_descriptor = return_model_descriptor_copy()
+
+        scores_per_tab = {}
+
+        for page in local_model_descriptor.keys():
+            for tab in local_model_descriptor[page].keys():
+                tab_score = []
+
+                for question_code in local_model_descriptor[page][tab]:
+
+                    if Checkbox.checkbox_disable_othervalues(page, tab, question_code) != True:  # related to checkbox standard extension
+
+                        question_values = Questions_settings.get_question_data_values(page, tab, question_code)
+                        tab_score.append(question_values['Stage'])
+
+                scores_per_tab[tab] = round(sum(tab_score) / len(tab_score), 1)
+
+
+
+        st.session_state['overview']['Current'] = scores_per_tab
+
 
     # delete the session state variable overview
     @staticmethod

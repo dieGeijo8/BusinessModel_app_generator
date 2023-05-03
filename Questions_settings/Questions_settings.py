@@ -27,7 +27,7 @@ class Questions_settings:
     def sessionstate_delete_question_data_values(page, tab, question_code):
 
         del st.session_state['rendering_stage' + Questions_settings.get_full_question_code(page, tab, question_code)]
-        del st.session_state['rendering_relevance' + Questions_settings.get_full_question_code(page, tab, question_code)]
+        del st.session_state['rendering_remarks' + Questions_settings.get_full_question_code(page, tab, question_code)]
 
         # standard extensions
         Checkbox.del_checkbox(page, tab, question_code)

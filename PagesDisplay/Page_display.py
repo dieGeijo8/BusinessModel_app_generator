@@ -1,9 +1,11 @@
 from Configuration.Configuration import return_model_full_descriptor_copy, tab_subs_titles
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
+from Questions_settings.Standard_extensions import Plan
 import streamlit as st
 
 class Page_display:
+
 
     #method to display a page - the way the tab subsection titles are printed should change when switching to configuration file
     @staticmethod
@@ -16,6 +18,8 @@ class Page_display:
 
         for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[:-1]):
             with tab_widget:
+
+                Plan.print_slider(tab)
 
                 i = 0
                 question_codes = list(local_model_full_descriptor[page][tab].keys())

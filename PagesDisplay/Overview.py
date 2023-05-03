@@ -1,5 +1,7 @@
+import pandas as pd
 import streamlit as st
 from SessionState.Session_state_dataframes import Session_state_dataframes
+from SessionState.Session_state_variables import Session_state_variables
 from PagesDisplay.Visualizations import Visualizations
 from Configuration.Configuration import pages
 
@@ -7,6 +9,9 @@ class Overview:
 
     @staticmethod
     def display_overview():
+
+        #get an updated copy of the ovw df
+        Session_state_variables.update_company_overview_session_state()
         df_ovw = Session_state_dataframes.get_ovw_df_copy()
 
         tabs = st.tabs(['Data', 'Dashboard'])
@@ -22,15 +27,20 @@ class Overview:
                     st.header(pages[pages_titles_index])
                     pages_titles_index += 1
 
-                elif df_ovw.loc[j, 'Tab'][:1] != df_ovw.loc[j - 1, 'Tab'][:1] or j == len(df_ovw) - 1:
+                elif df_ovw.loc[j, 'Tab'][:1] != df_ovw.loc[j - 1, 'Tab'][:1]:
 
-                    st.experimental_data_editor(df_ovw.iloc[start:j], key=str(j) + '_data_editor_ovw')
+                    st.dataframe(df_ovw.iloc[start:j])
+
                     start = j
 
                     if pages_titles_index <= (len(pages) - 1):
 
                         st.header(pages[pages_titles_index])
                         pages_titles_index += 1
+
+                elif j == len(df_ovw) - 1:
+
+                    st.dataframe(df_ovw.iloc[start:j+1])
 
         with tabs[1]:
 
