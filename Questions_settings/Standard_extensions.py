@@ -212,7 +212,8 @@ class Plan:
 
         return wrapper
 
-    # initialize the plan values, set in the overview by the corresponding method in session state varibales module
+
+    # initialize the plan values, set in the overview by the corresponding method in session state variables module
     @plan_decorator
     @staticmethod
     def initialize_plan(ovw):
@@ -241,7 +242,8 @@ class Plan:
             ovw[Plan.name] = plans_per_tab
 
 
-    # for overview display
+
+    #methods for ovw df - they are called in the Session state dataframes class
     @plan_decorator
     @staticmethod
     def add_plan_to_column_list(ordered_columns_list):
@@ -255,7 +257,8 @@ class Plan:
 
 
 
-    #for overview visualization
+
+    #methods for ovw df aggregated by page - they are called in the Session state dataframes class
     @plan_decorator
     @staticmethod
     def plan_by_page_first_method(tabs_plan_values, tab, weights_index):
@@ -281,6 +284,10 @@ class Plan:
     def plan_by_page_second_method_noweights(page, ovw_aggregated_by_page, tabs_plan_values):
         ovw_aggregated_by_page[page][Plan.name] = sum(tabs_plan_values) / len(tabs_plan_values)
 
+
+
+
+    #methods for the visualization of the aggregated ovw df - they are called in the visualization class
     @plan_decorator
     @staticmethod
     def ovw_barplot_plan_lines(fig, df):
