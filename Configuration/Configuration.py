@@ -6,6 +6,8 @@ excel_file_directory = 'Configuration/15M.xlsx' #this is now the 'configuration 
 
 #pages - here it is manually, it should be via input
 pages = ['1', '2', '3', '4', '5']
+pages_names = ['Procurement Framework Strategy', 'Category strategies', 'Supplier strategies',
+               'Process strategies', 'Procurement performance management']
 
 #tab subsections titles - here it is manually, it should be via input
 tab_subs_titles = ['Integrated assessment', 'Concept excellence', 'Process Excellence', 'Implementation']

@@ -2,7 +2,8 @@ import streamlit as st
 from Configuration.Configuration import return_model_descriptor_copy
 from Firestore.FirestoreAPI import FirestoreAPI
 from Questions_settings.Questions_settings import Questions_settings
-from Questions_settings.Standard_extensions import Checkbox, Plan
+from Extensions.Standard_extensions.Checkbox import Checkbox
+from Extensions.Standard_extensions.Plan import Plan
 
 class Session_state_variables:
 

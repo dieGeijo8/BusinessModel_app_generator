@@ -2,8 +2,9 @@ import pandas as pd
 import streamlit as st
 from Questions_settings.Questions_settings import Questions_settings
 from Configuration.Configuration import return_model_descriptor_copy, return_model_ovw_descriptor_copy
-from SessionState.Session_state_variables import Session_state_variables
-from Questions_settings.Standard_extensions import Checkbox, Weights, Plan
+from Extensions.Standard_extensions.Checkbox import Checkbox
+from Extensions.Standard_extensions.Plan import Plan
+from Extensions.Standard_extensions.Weights import Weights_per_tab
 
 
 class Session_state_dataframes:
@@ -52,7 +53,7 @@ class Session_state_dataframes:
         df_ovw = return_model_ovw_descriptor_copy()
 
         # standard extensions
-        Weights.add_weights_column(df_ovw)
+        Weights_per_tab.add_weights_column(df_ovw)
 
         df_ovw['Current'] = [st.session_state['overview']['Current'][tab] for tab in
                              st.session_state['overview']['Current'].keys()]
@@ -65,31 +66,29 @@ class Session_state_dataframes:
 
         # standard extensions
         Plan.add_plan_to_column_list(ordered_columns_list)
-        Weights.add_weights_to_columnslist(ordered_columns_list)
+        Weights_per_tab.add_weights_to_columnslist(ordered_columns_list)
 
         df_ovw = df_ovw[ordered_columns_list]
 
         return df_ovw.copy()
 
-    #uses with the following structure: page(key) - Current(key): average value, Plan(key): average value, weighted just if setted
+    #uses a dict with the following structure: page(key) - Current(key): average value, Plan(key): average value, weighted just if setted
     #and returns a df with the following columns: page - plan - current
     @staticmethod
     def get_ovw_df_aggregated_by_page_copy():
 
-        df_ovw = Session_state_dataframes.get_ovw_df_copy()
-
         #standard extension
-        ovw_df_aggregated_by_page = Weights.get_weighted_current_and_plan_by_page(df_ovw)
+        ovw_dict_aggregated_by_page = Weights_per_tab.get_eventual_weighted_scores_by_page()
 
         return_df = pd.DataFrame({})
 
-        return_df['Page'] = ovw_df_aggregated_by_page.keys()
+        return_df['Page'] = ovw_dict_aggregated_by_page.keys()
         return_df['Page'] = return_df['Page'].astype(str)
 
-        return_df['Current'] = [ovw_df_aggregated_by_page[page]['Current'] for page in ovw_df_aggregated_by_page.keys()]
+        return_df['Current'] = [ovw_dict_aggregated_by_page[page]['Current'] for page in ovw_dict_aggregated_by_page.keys()]
 
         #standard extension
-        Plan.add_plan_to_df_for_vis(ovw_df_aggregated_by_page, return_df)
+        Plan.add_plan_to_df_for_vis(ovw_dict_aggregated_by_page, return_df)
         return return_df.copy()
 
 

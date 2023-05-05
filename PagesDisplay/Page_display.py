@@ -1,7 +1,7 @@
 from Configuration.Configuration import return_model_full_descriptor_copy, tab_subs_titles
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
-from Questions_settings.Standard_extensions import Plan
+from Extensions.Standard_extensions.Plan import Plan
 import streamlit as st
 
 class Page_display:

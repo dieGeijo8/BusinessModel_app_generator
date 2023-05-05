@@ -1,5 +1,5 @@
 import streamlit as st
-from Questions_settings.Standard_extensions import Checkbox
+from Extensions.Standard_extensions.Checkbox import Checkbox
 
 class Questions_settings:
     

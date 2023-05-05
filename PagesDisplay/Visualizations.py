@@ -1,7 +1,6 @@
 from SessionState.Session_state_dataframes import Session_state_dataframes
 import plotly.express as px
-import plotly.graph_objects as go
-from Questions_settings.Standard_extensions import Plan
+from Extensions.Standard_extensions.Plan import Plan
 import numpy as np
 
 
