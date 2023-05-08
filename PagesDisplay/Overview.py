@@ -3,7 +3,7 @@ import streamlit as st
 from SessionState.Session_state_dataframes import Session_state_dataframes
 from SessionState.Session_state_variables import Session_state_variables
 from PagesDisplay.Visualizations import Visualizations
-from Configuration.Configuration import pages, pages_names, ovw_as_percentage
+from Configuration.Configuration import pages, pages_names
 from Extensions.Standard_extensions.Weights import Weights_per_tab, Weights_per_page
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Percentages import Percentages
@@ -81,12 +81,6 @@ class Overview:
         Session_state_variables.update_company_overview_session_state()
         df_ovw = Session_state_dataframes.get_ovw_df_copy()
 
-        # if ovw_as_percentage == True:
-        #     df_ovw['Current'] = [str(round(100 * x / 5, 2))+'%' for x in df_ovw['Current'].to_list()]
-        #
-        #     #standard extensions
-        #     Plan.display_ovw_percentages(df_ovw)
-
         #standard extension
         Percentages.ovw_as_percentage(df_ovw)
 
@@ -134,17 +128,34 @@ class Overview:
 
         with tabs[1]:
 
+            st.header(st.session_state.company + ' overview')
+
+
+            st.subheader('Average score by page')
+
             bp = Visualizations.overview_barplot()
 
             st.plotly_chart(bp, theme="streamlit", use_container_width=True)
+            with st.expander('Barplot description'):
+                st.write('The above graph shows the average current and plan(if selected) score per each page of the model. The horizontal lines displayed indicate the average current and plan values across all the pages.')
 
+
+            st.write('')
+            st.write('')
+
+            st.subheader('Average score by tab')
 
             col1, col2 = st.columns([1, 4])
 
             with col1:
                 page_selected = st.selectbox(label='Choose a page.', options=pages)
             with col2:
-                rc = Visualizations.overview_radarchart(page_selected)
+                st.write('')
 
-                st.plotly_chart(rc, theme="streamlit", use_container_width=True)
+            rc = Visualizations.overview_radarchart(page_selected)
+
+            st.plotly_chart(rc, theme="streamlit", use_container_width=True)
+
+            with st.expander('Radar chart description'):
+                st.write('The above graph shows the average current and plan(if selected) score per each tab of the model. By selecting the page through the scrollable menu on the left you can explore all the tabs of the model by page.')
 

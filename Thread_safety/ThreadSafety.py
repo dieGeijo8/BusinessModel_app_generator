@@ -3,19 +3,17 @@ import streamlit as st
 from Firestore.FirestoreAPI import FirestoreAPI
 
 
-#global variables - visible to all process
+#global variables - visible to all processes
 lock = threading.Lock()
-#at the moment on new companies the check is not performed, cause they are added after the selection to the company list in the db
-#so if 2 users add the same company in the same moment I don't have thread safety
-#intializing this variable later cause problems
-#NOW MAYBE THIS PROBLEM IS SOLVED, I RE INTITIALIZE THE VARIABLE AFTER INITIALIZING SESSION STATE
 locks_companies = dict(zip(FirestoreAPI.get_company_list(), len(FirestoreAPI.get_company_list())*[0]))
 
 class ThreadSafety:
 
     @staticmethod
-    def reinitialize_lock_companies():
-        locks_companies = dict(zip(st.session_state.company_list, len(st.session_state.company_list)*[0]))
+    def add_company_to_lock(company_name):
+        if company_name not in locks_companies.keys():
+
+            locks_companies[company_name] = 0
 
     @staticmethod
     def lock_company():

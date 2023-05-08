@@ -89,6 +89,7 @@ class Session_state_dataframes:
 
         #standard extension
         Plan.add_plan_to_df_for_vis(ovw_dict_aggregated_by_page, return_df)
+
         return return_df.copy()
 
 

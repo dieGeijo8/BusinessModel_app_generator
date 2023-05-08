@@ -1,11 +1,15 @@
 import streamlit as st
+import plotly.graph_objects as go
 from Firestore.FirestoreAPI import FirestoreAPI
 from Configuration.Configuration import return_model_descriptor_copy
 
 class Plan:
 
     name = 'Plan'
-    activate_plan = True
+
+    if 'plan_extension' not in st.session_state:
+        st.session_state['plan_extension'] = False
+    activate_plan = st.session_state['plan_extension']
 
     #decorator to check if the variable activate plan is set to false or true
     @staticmethod
@@ -81,11 +85,19 @@ class Plan:
     #methods for the visualization of the aggregated ovw df - they are called in the visualization class
     @plan_decorator
     @staticmethod
-    def ovw_barplot_plan_lines(fig, df):
+    def ovw_barplot_plan_lines(fig, df, annotation_y):
         plan_avg = sum(df[Plan.name].tolist()) / len(df[Plan.name].tolist())
         fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
                       x0=0, x1=1, xref="paper", y0=plan_avg, y1=plan_avg, yref="y")
-        fig.add_annotation(text='Avg. planned stage', x='5', y=plan_avg + 0.1, showarrow=False)
+        fig.add_annotation(text='Avg. planned value', x='5', y=plan_avg + annotation_y, showarrow=False)
+
+    @plan_decorator
+    @staticmethod
+    def ovw_radarchart_plan(fig, subset_df_ovw):
+        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Plan'].tolist(), theta=subset_df_ovw['Tab'].tolist(), name='Plan',
+                                      fill='toself',
+                                      line_color='#FFC000'))
+
 
 
 

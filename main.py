@@ -8,6 +8,8 @@ def callback_textinput():
 
     st.session_state.company_list.append(st.session_state.textinput_value)
 
+    ThreadSafety.add_company_to_lock(st.session_state.textinput_value)
+
     st.session_state.textinput_value = ''
     st.session_state.first_textinput_value = ''
 
@@ -29,7 +31,6 @@ def callback_selectbox():
     Session_state_variables.initialize_company_overview_session_state()
 
 
-
 if __name__ == "__main__" :
 
     st.write('Welcome to the home page')
@@ -40,7 +41,6 @@ if __name__ == "__main__" :
         Session_state_variables.initialize_webapp_sessionstate()
 
 
-
     st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
                  index=st.session_state.first_selectbox_value,
                  on_change=callback_selectbox, key='selectbox_value')
@@ -49,6 +49,7 @@ if __name__ == "__main__" :
         st.text_input('Write the name of the company and submit. After that you can select it from the dedicated scrollable menu.',
                       value=st.session_state.first_textinput_value,
                       on_change=callback_textinput, key='textinput_value')
+
 
     st.button('Submit', on_click=FirestoreAPI.submit_button, disabled=st.session_state.dont_display_data)
 

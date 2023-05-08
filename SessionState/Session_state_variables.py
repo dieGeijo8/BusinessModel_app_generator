@@ -27,7 +27,6 @@ class Session_state_variables:
             st.session_state['dont_display_data'] = False
 
 
-
     # initialize the session state variables containing the data for the session state company
     @staticmethod
     def initialize_company_session_state():
