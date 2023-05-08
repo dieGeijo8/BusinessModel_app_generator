@@ -74,7 +74,7 @@ class Plan:
 
     @plan_decorator
     @staticmethod
-    def display_ovw_percentages(df_ovw):
+    def plan_ovw_as_percentage(df_ovw):
         df_ovw[Plan.name] = [str(round(100 * x / 5, 2)) + '%' for x in df_ovw[Plan.name].to_list()]
 
 

@@ -3,7 +3,7 @@ import streamlit as st
 from SessionState.Session_state_dataframes import Session_state_dataframes
 from SessionState.Session_state_variables import Session_state_variables
 from PagesDisplay.Visualizations import Visualizations
-from Configuration.Configuration import pages, pages_names #, ovw_as_percentage
+from Configuration.Configuration import pages, pages_names, ovw_as_percentage
 from Extensions.Standard_extensions.Weights import Weights_per_tab, Weights_per_page
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Percentages import Percentages
@@ -34,13 +34,9 @@ class Overview:
 
             with column_widget:
 
-                if ovw_as_percentage == True:
+                value = Percentages.page_overall_as_percentage(scores_overall_dict, key)
 
-                    value = str(round(100*scores_overall_dict[key]/5, 2))
-                    st.metric(label=metrics_titles[metric_title], value=value+'%')
-                else:
-
-                    st.metric(label=metrics_titles[metric_title], value=str(scores_overall_dict[key]))
+                st.metric(label=metrics_titles[metric_title], value=value)
 
 
 
@@ -75,18 +71,7 @@ class Overview:
 
             with column_widget:
 
-                if ovw_as_percentage == True:
-
-                    if metric_title == 'Weight':
-                        value = str(round(100 * scores_per_page_dict[page][key], 2))
-
-                    else:
-                        value = str(round(100 * scores_per_page_dict[page][key] / 5, 2))
-
-                    st.metric(label=metrics_titles[metric_title], value=value+'%')
-                else:
-
-                    st.metric(label=metrics_titles[metric_title], value=str(scores_per_page_dict[page][key]))
+                Percentages.print_overall(scores_per_page_dict, page, key, metrics_titles, metric_title)
 
 
     @staticmethod
@@ -102,8 +87,8 @@ class Overview:
         #     #standard extensions
         #     Plan.display_ovw_percentages(df_ovw)
 
-        Percentages.ovw_as_percentage(df_ovw, 'Current')
-
+        #standard extension
+        Percentages.ovw_as_percentage(df_ovw)
 
 
         tabs = st.tabs(['Data', 'Dashboard'])

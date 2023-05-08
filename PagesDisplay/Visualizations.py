@@ -64,13 +64,15 @@ class Visualizations:
 
         fig = px.bar(df, x='Page', y=y_list, color_discrete_sequence=['#42A7B3', '#FFC000'], barmode='group',
                      hover_data=['Page name'])
-        fig.update_layout(yaxis_range=[-0.5,5.5], bargap=0.5)
+
+        #fig.update_layout(yaxis_range=[-0.5,5.5], bargap=0.5)
 
 
         curr_avg = sum(df['Current'].tolist()) / len(df['Current'].tolist())
         fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
                       x0=0, x1=1, xref="paper", y0=curr_avg, y1=curr_avg, yref="y")
-        fig.add_annotation(text='Avg. current stage', x='5', y=curr_avg+0.1, showarrow=False)
+        fig.add_annotation(text='Avg. current stage', x=df['Page'].tolist()[len(df['Page'].tolist()) - 1],
+                           y=curr_avg+0.1, showarrow=False)
 
 
         #standard extension
@@ -87,7 +89,6 @@ class Visualizations:
         subset_df_ovw = df_ovw.loc[df_ovw['Page'] == page_selected]
         subset_df_ovw['Tab'] = [str(x).replace('.', '_') for x in subset_df_ovw['Tab']]
 
-        print((subset_df_ovw))
 
         fig = go.Figure()
         fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Current'].tolist(), theta=subset_df_ovw['Tab'].tolist(), name='Current',
