@@ -1,5 +1,6 @@
 import streamlit as st
 from Firestore.FirestoreAPI import FirestoreAPI
+from Configuration.Configuration import return_model_descriptor_copy
 
 class Plan:
 
@@ -23,7 +24,6 @@ class Plan:
     @plan_decorator
     @staticmethod
     def initialize_plan(ovw):
-
         ovw['Plan'] = FirestoreAPI.get_company_overview_plan()
 
 
@@ -35,9 +35,13 @@ class Plan:
     @plan_decorator
     @staticmethod
     def add_plan_to_ovw(df_ovw):
-        df_ovw[Plan.name] = [st.session_state['overview'][Plan.name][tab] for tab in
-                          st.session_state['overview'][Plan.name].keys()]
+        #ensure right order
+        local_model_descriptor = return_model_descriptor_copy()
+        tabs = []
+        for page in local_model_descriptor.keys():
+            tabs = tabs + list(local_model_descriptor[page].keys())
 
+        df_ovw[Plan.name] = [st.session_state['overview'][Plan.name][tab] for tab in tabs]
 
 
 
@@ -68,6 +72,10 @@ class Plan:
         ovw_aggregated_by_page[page][Plan.name] = round(sum(tabs_plan_values) / len(tabs_plan_values), 2)
 
 
+    @plan_decorator
+    @staticmethod
+    def display_ovw_percentages(df_ovw):
+        df_ovw[Plan.name] = [str(round(100 * x / 5, 2)) + '%' for x in df_ovw[Plan.name].to_list()]
 
 
     #methods for the visualization of the aggregated ovw df - they are called in the visualization class
@@ -81,6 +89,36 @@ class Plan:
 
 
 
+    #methods for the overall ovw per page display and for the overall ovw display
+    @staticmethod
+    def ovw_per_page_display_first_method():
+        if Plan.activate_plan == True:
+
+            return 3
+        else:
+
+            return 1
+    @plan_decorator
+    @staticmethod
+    def ovw_per_page_display_second_method(scores_per_page_dict, page):
+        scores_per_page_dict[page]['Plan - Current'] = round(scores_per_page_dict[page]['Plan'] - scores_per_page_dict[page]['Current'], 2)
+
+    @plan_decorator
+    @staticmethod
+    def ovw_per_page_display_third_method(metrics_titles):
+
+        metrics_titles['Plan'] = 'Overall page plan'
+        metrics_titles['Plan - Current'] = 'Overall page plan - current'
+
+    @plan_decorator
+    @staticmethod
+    def ovw_overall_display_second_method(scores_dict):
+        scores_dict['Plan - Current'] = round(scores_dict['Plan'] - scores_dict['Current'], 2)
+
+
+
+
+
 
     #methods to show the slider and set the plan values with the callback - called in page display
     @plan_decorator
@@ -91,8 +129,16 @@ class Plan:
     @plan_decorator
     @staticmethod
     def print_slider(tab):
-        st.header('Plan')
+        st.subheader('Plan')
+
+        st.markdown(
+            """<style>
+            div[class*="stSlider"] > label > div[data-testid="stMarkdownContainer"] > p {
+            font-size: 17px;
+            </style>
+            """, unsafe_allow_html=True)
 
         st.slider('Set the plan value to reach for this tab:', min_value=1, max_value=5,
+                  disabled=st.session_state.dont_display_data,
                   value=st.session_state['overview'][Plan.name][tab],
                   on_change=Plan.slider_plan_callback, args=(tab,), key=tab + '_plan_slider')

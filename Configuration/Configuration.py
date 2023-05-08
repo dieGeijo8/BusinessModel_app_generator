@@ -9,6 +9,9 @@ pages = ['1', '2', '3', '4', '5']
 pages_names = ['Procurement Framework Strategy', 'Category strategies', 'Supplier strategies',
                'Process strategies', 'Procurement performance management']
 
+stages = ('1', '2', '3', '4', '5')
+# ovw_as_percentage = True
+
 #tab subsections titles - here it is manually, it should be via input
 tab_subs_titles = ['Integrated assessment', 'Concept excellence', 'Process Excellence', 'Implementation']
 

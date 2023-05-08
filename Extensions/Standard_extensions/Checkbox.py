@@ -75,11 +75,13 @@ class Checkbox:
     @checkbox_decorator
     @staticmethod
     def display_checkbox(page, tab, question_code):
-        st.checkbox('Question not relevant to my assessment, dont\'t consider it',
-                                    value=st.session_state['rendering_checkbox' + Checkbox.get_full_question_code(page, tab,question_code)],
-                                    on_change=Checkbox.checkbox_callback, args=(page, tab, question_code),
-                                    key='checkbox' + Checkbox.get_full_question_code(page, tab, question_code)
-                                    )
+
+        st.checkbox(label='Question not relevant to my assessment, dont\'t consider it',
+                    disabled=st.session_state.dont_display_data,
+                    value=st.session_state['rendering_checkbox' + Checkbox.get_full_question_code(page, tab,question_code)],
+                    on_change=Checkbox.checkbox_callback, args=(page, tab, question_code),
+                    key='checkbox' + Checkbox.get_full_question_code(page, tab, question_code)
+                    )
 
     @staticmethod
     def checkbox_disable_othervalues(page, tab, question_code):

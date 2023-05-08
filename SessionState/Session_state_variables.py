@@ -23,6 +23,9 @@ class Session_state_variables:
         if 'company_list' not in st.session_state:
             st.session_state['company_list'] = FirestoreAPI.get_company_list()
 
+        if 'dont_display_data' not in st.session_state:
+            st.session_state['dont_display_data'] = False
+
 
 
     # initialize the session state variables containing the data for the session state company

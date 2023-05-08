@@ -1,4 +1,5 @@
 import streamlit as st
+from Configuration.Configuration import stages
 from Extensions.Standard_extensions.Checkbox import Checkbox
 
 class Questions_settings:
@@ -72,6 +73,19 @@ class Questions_settings:
 
     # save the new stage value in the reendering session state variable
     @staticmethod
+    def markdown_settings():
+        st.markdown(
+            """<style>       
+        div[class*="stRadio"] > label > div[data-testid="stMarkdownContainer"] > p {
+            font-size: 17px;
+        }
+        div[class*="stTextArea"] > label > div[data-testid="stMarkdownContainer"] > p {
+            font-size: 17px;
+        }
+            </style>
+            """, unsafe_allow_html=True)
+
+    @staticmethod
     def stage_callback(page, tab, question_code):
 
         st.session_state['rendering_stage' + Questions_settings.get_full_question_code(page, tab, question_code)] = \
@@ -89,20 +103,25 @@ class Questions_settings:
     def display_question(local_model_full_descriptor, page, tab, question_code):
 
         question_text = list(local_model_full_descriptor[page][tab][question_code].keys())[0]
+        stages_descriptions = local_model_full_descriptor[page][tab][question_code][question_text]
+
+        Questions_settings.markdown_settings()
 
         #standard extension
         Checkbox.display_checkbox(page, tab, question_code)
 
-        st.radio(question_text, ('1', '2', '3', '4', '5'),
-                 disabled=Checkbox.checkbox_disable_othervalues(page, tab, question_code),
+        st.radio(question_text, stages,
+                 disabled=Checkbox.checkbox_disable_othervalues(page, tab, question_code) or st.session_state.dont_display_data,
                  index=st.session_state['rendering_stage' + Questions_settings.get_full_question_code(page, tab, question_code)] - 1,
+                 format_func=lambda x: x + ' - ' + stages_descriptions[int(x) - 1],
                  on_change=Questions_settings.stage_callback, args=(page, tab, question_code),
                  key='stage' + Questions_settings.get_full_question_code(page, tab, question_code))
 
         st.text_area('Remarks',
-                     disabled=Checkbox.checkbox_disable_othervalues(page, tab, question_code),
+                     disabled=Checkbox.checkbox_disable_othervalues(page, tab, question_code) or st.session_state.dont_display_data,
                      value=st.session_state['rendering_remarks' + Questions_settings.get_full_question_code(page, tab, question_code)],
                      on_change=Questions_settings.remarks_callback, args=(page, tab, question_code),
                      key='remarks' + Questions_settings.get_full_question_code(page, tab, question_code))
+
 
 

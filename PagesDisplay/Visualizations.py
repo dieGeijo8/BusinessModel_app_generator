@@ -1,5 +1,7 @@
+from Configuration.Configuration import pages, pages_names
 from SessionState.Session_state_dataframes import Session_state_dataframes
 import plotly.express as px
+import plotly.graph_objects as go
 from Extensions.Standard_extensions.Plan import Plan
 import numpy as np
 
@@ -53,33 +55,50 @@ class Visualizations:
     def overview_barplot():
         # get the updated overview df
         df = Session_state_dataframes.get_ovw_df_aggregated_by_page_copy()
+        df['Page name'] = pages_names
 
-        #-------------------------------------------------------------
         y_list = ['Current']
+
         #standard extension
         Plan.add_plan_to_column_list(y_list)
 
-        fig = px.bar(df, x='Page', y=y_list, color_discrete_sequence=['#42A7B3', '#FFC000'], barmode='group')#, histfunc='avg')
+        fig = px.bar(df, x='Page', y=y_list, color_discrete_sequence=['#42A7B3', '#FFC000'], barmode='group',
+                     hover_data=['Page name'])
         fig.update_layout(yaxis_range=[-0.5,5.5], bargap=0.5)
-        #----------------------------section colors ---------------------------
-        colors = ['#43B02A', '#4E0CB0', '#2DD6E2', '#037367', '#F6009E']
-        fig.add_shape(type="line", line_color=colors[0], line_width=3, opacity=1, x0=0, x1=0.2, xref="paper",  y0=-0.005, y1=-0.005, yref="y")
-        fig.add_shape(type="line", line_color=colors[1], line_width=3, opacity=1, x0=0.2, x1=0.4, xref="paper",  y0=-0.005, y1=-0.005, yref="y")
-        fig.add_shape(type="line", line_color=colors[2], line_width=3, opacity=1, x0=0.4, x1=0.6, xref="paper",  y0=-0.005, y1=-0.005, yref="y")
-        fig.add_shape(type="line", line_color=colors[3], line_width=3, opacity=1, x0=0.6, x1=0.8, xref="paper",  y0=-0.005, y1=-0.005, yref="y")
-        fig.add_shape(type="line", line_color=colors[4], line_width=3, opacity=1, x0=0.8, x1=1, xref="paper", y0=-0.005, y1=-0.005, yref="y")
-        #----------------------------------------------------------------------
-        #--------------------------average lines-------------------------------
+
+
         curr_avg = sum(df['Current'].tolist()) / len(df['Current'].tolist())
-        # plan_avg = sum(df['Plan'].tolist()) / len(df['Plan'].tolist())
         fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
                       x0=0, x1=1, xref="paper", y0=curr_avg, y1=curr_avg, yref="y")
         fig.add_annotation(text='Avg. current stage', x='5', y=curr_avg+0.1, showarrow=False)
 
+
+        #standard extension
         Plan.ovw_barplot_plan_lines(fig, df)
-        # fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
-        #               x0=0, x1=1, xref="paper", y0=plan_avg, y1=plan_avg, yref="y")
-        # fig.add_annotation(text='Avg. planned stage', x='5', y=plan_avg + 0.1, showarrow=False)
-        #-----------------------------------------------------------------------
 
         return fig
+
+
+    @staticmethod
+    def overview_radarchart(page_selected):
+        df_ovw = Session_state_dataframes.get_ovw_df_copy()
+
+        df_ovw['Page'] = [x[:1] for x in df_ovw['Tab'].to_list()]
+        subset_df_ovw = df_ovw.loc[df_ovw['Page'] == page_selected]
+        subset_df_ovw['Tab'] = [str(x).replace('.', '_') for x in subset_df_ovw['Tab']]
+
+        print((subset_df_ovw))
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Current'].tolist(), theta=subset_df_ovw['Tab'].tolist(), name='Current',
+                                      fill='toself',
+                                      line_color='#42A7B3'))
+        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Plan'].tolist(), theta=subset_df_ovw['Tab'].tolist(), name='Plan',
+                                      fill='toself',
+                                      line_color='#FFC000'))
+
+        fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[1, 5.1])), showlegend=True)
+        fig.update_polars(angularaxis_linewidth=0.1)
+
+        return fig
+

@@ -19,6 +19,12 @@ class Page_display:
         for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[:-1]):
             with tab_widget:
 
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write('')
+                with col2:
+                    st.warning('The company selected is: ' + st.session_state.company)
+
                 Plan.print_slider(tab)
 
                 i = 0
@@ -27,15 +33,17 @@ class Page_display:
 
                     if question_code_index == 0:
 
-                        st.header(tab_subs_titles[i])
+                        st.subheader(tab_subs_titles[i])
                         i += 1
 
                     if question_code_index != 0 and question_code[:2] != question_codes[question_code_index - 1][:2] and i <= (len(tab_subs_titles) - 1):
 
-                        st.header(tab_subs_titles[i])
+                        st.subheader(tab_subs_titles[i])
                         i += 1
 
                     Questions_settings.display_question(local_model_full_descriptor, page, tab, question_code)
+                    st.write(' ')
+                    st.write(' ')
 
         with tabs[-1]:
             # lineplot

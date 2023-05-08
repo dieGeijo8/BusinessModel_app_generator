@@ -126,7 +126,7 @@ class Weights_per_page:
     @staticmethod
     def page_weights_decorator(func):
         def wrapper(*args, **kwargs):
-            if Weights_per_tab.activate_tab_weights == False:
+            if Weights_per_page.activate_page_weights == False:
 
                 a = 0 #just to do something
 
@@ -136,6 +136,31 @@ class Weights_per_page:
 
         return wrapper
 
+
+    #methods for per page ovw display
+    @staticmethod
+    def display_page_weights_first_method(columns_number):
+        if Weights_per_page.activate_page_weights == True:
+
+            columns_number = columns_number + 1
+            return columns_number
+        else:
+            return columns_number
+
+
+    @page_weights_decorator
+    @staticmethod
+    def display_page_weights_second_method(scores_per_page_dict, page):
+        scores_per_page_dict[page]['Weight'] = Weights_per_page.pages_weights_list[page]
+
+
+    @page_weights_decorator
+    @staticmethod
+    def display_page_weights_third_method(metrics_titles):
+        metrics_titles['Weight'] = 'Page weight'
+
+
+    #method to get the eventual per page weighted overall overview score
     @staticmethod
     def get_eventual_weighted_scores_overall():
 
