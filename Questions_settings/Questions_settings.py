@@ -57,7 +57,7 @@ class Questions_settings:
 
         return return_dict
 
-    # support method in Firestore API - decide the types of the values to collect for each question
+    # support method in DataManagement API - decide the types of the values to collect for each question
     @staticmethod
     def get_first_question_data_values():
 

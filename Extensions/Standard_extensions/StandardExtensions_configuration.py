@@ -1,5 +1,5 @@
 import streamlit as st
-from Firestore.FirestoreAPI import FirestoreAPI
+from DataManagement.DataManagement import DataManagement
 from Extensions.Standard_extensions.Checkbox import Checkbox
 from Extensions.Standard_extensions.Percentages import Percentages
 from Extensions.Standard_extensions.Plan import Plan
@@ -31,11 +31,11 @@ class StandardExtensions_configuration:
         if st.session_state.default_activate_page_weights == True:
             configuration[Weights_per_page.name] = st.session_state['page_weights_extension']
 
-        FirestoreAPI.set_company_configuration(st.session_state.textinput_value, configuration)
+        DataManagement.set_company_configuration(st.session_state.textinput_value, configuration)
 
     @staticmethod
     def get_extension_config():
-        configuration = FirestoreAPI.get_company_configuration()
+        configuration = DataManagement.get_company_configuration()
 
         st.session_state.activate_plan = configuration[Plan.name]
         st.session_state.activate_percentages = configuration[Percentages.name]

@@ -1,11 +1,11 @@
 import threading
 import streamlit as st
-from Firestore.FirestoreAPI import FirestoreAPI
+from DataManagement.DataManagement import DataManagement
 
 
 #global variables - visible to all processes
 lock = threading.Lock()
-locks_companies = dict(zip(FirestoreAPI.get_company_list(), len(FirestoreAPI.get_company_list())*[0]))
+locks_companies = dict(zip(DataManagement.get_company_list(), len(DataManagement.get_company_list()) * [0]))
 
 class ThreadSafety:
 

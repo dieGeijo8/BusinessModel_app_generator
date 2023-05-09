@@ -1,6 +1,6 @@
 import streamlit as st
 from SessionState.Session_state_variables import Session_state_variables
-from Firestore.FirestoreAPI import FirestoreAPI
+from DataManagement.DataManagement import DataManagement
 from Thread_safety.ThreadSafety import ThreadSafety
 from Extensions.Standard_extensions.StandardExtensions_configuration import StandardExtensions_configuration
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
 
 
-    st.button('Submit data', on_click=FirestoreAPI.submit_button, disabled=st.session_state.dont_display_data)
+    st.button('Submit data', on_click=DataManagement.submit_button, disabled=st.session_state.dont_display_data)
 
     ThreadSafety.lock_warning_display()
 

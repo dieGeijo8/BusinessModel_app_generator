@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
-from Firestore.FirestoreAPI import FirestoreAPI
-from Configuration.Configuration import return_model_descriptor_copy
+from DataManagement.DataManagement import DataManagement
+from Configuration.Configuration import return_model_descriptor_copy, max_stage
 
 class Plan:
 
@@ -32,7 +32,7 @@ class Plan:
     @plan_decorator
     @staticmethod
     def initialize_plan(ovw):
-        ovw['Plan'] = FirestoreAPI.get_company_overview_plan()
+        ovw['Plan'] = DataManagement.get_company_overview_plan()
 
 
     @plan_decorator
@@ -83,7 +83,7 @@ class Plan:
     @staticmethod
     def __conversion_function(x):
 
-        new_x = 0 + (100 - 0) * (x - 1) / (5 - 1)
+        new_x = 0 + (100 - 0) * (x - 1) / (max_stage - 1)
 
         return round(new_x, 2)
 
@@ -161,7 +161,7 @@ class Plan:
             </style>
             """, unsafe_allow_html=True)
 
-        st.slider('Set the plan value to reach for this tab:', min_value=1, max_value=5,
+        st.slider('Set the plan value to reach for this tab:', min_value=1, max_value=max_stage,
                   disabled=st.session_state.dont_display_data,
                   value=st.session_state['overview'][Plan.name][tab],
                   on_change=Plan.slider_plan_callback, args=(tab,), key=tab + '_plan_slider')

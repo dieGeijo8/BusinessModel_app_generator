@@ -3,21 +3,23 @@ import streamlit as st
 from Configuration.Configuration import return_model_descriptor_copy
 from Questions_settings.Questions_settings import Questions_settings
 
-class FirestoreAPI:
+class Firestore_API:
 
-    #support method - object to connect with a collection of the db
+    key_file_dir = "DataManagement/Firestore/firestore_key.json"
+
+    # support method - object to connect with a collection of the db
     @staticmethod
-    def get_company_collection():
-        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
+    def Firestore_get_company_collection():
+        db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
 
         company_collection = db.collection(st.session_state.company)
         return company_collection
 
     #support method - used in the web app initialization to obtain the starting set of available companies
     @staticmethod
-    def get_company_list():
+    def Firestore_get_company_list():
         collections_names = ['']
-        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
+        db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
 
         for collection in db.collections():
 
@@ -33,8 +35,8 @@ class FirestoreAPI:
     #'main' method
     #returns a dictionary with the following structure page(key) - tab(key) - question code(key) - {'Stage': value, 'Remarks': value}
     @staticmethod
-    def get_company_data():
-        company_collection = FirestoreAPI.get_company_collection()
+    def Firestore_get_company_data():
+        company_collection = Firestore_API.Firestore_get_company_collection()
 
         if len(company_collection.get()) > 0:
 
@@ -79,8 +81,8 @@ class FirestoreAPI:
     #'main' method
     #it submits to the firestore db the company data contained in the session state variables
     @staticmethod
-    def submit_company_data():
-        company_collection = FirestoreAPI.get_company_collection()
+    def Firestore_submit_company_data():
+        company_collection = Firestore_API.Firestore_get_company_collection()
 
         local_model_descriptor = return_model_descriptor_copy()
         company_data = {}
@@ -110,8 +112,8 @@ class FirestoreAPI:
 
     #get the plan values of the ovw
     @staticmethod
-    def get_company_overview_plan():
-        company_collection = FirestoreAPI.get_company_collection()
+    def Firestore_get_company_overview_plan():
+        company_collection = Firestore_API.Firestore_get_company_collection()
 
         company_ovw_document = company_collection.document('overview')
 
@@ -133,8 +135,8 @@ class FirestoreAPI:
 
     #submit the current value of the session state variable ovw
     @staticmethod
-    def submit_company_overview():
-        company_collection = FirestoreAPI.get_company_collection()
+    def Firestore_submit_company_overview():
+        company_collection = Firestore_API.Firestore_get_company_collection()
 
         company_ovw_document = company_collection.document('overview')
         company_ovw_document.set(st.session_state['overview'])
@@ -143,17 +145,17 @@ class FirestoreAPI:
 
     #function for submit button
     @staticmethod
-    def submit_button():
-        FirestoreAPI.submit_company_data()
+    def Firestore_submit_button():
+        Firestore_API.Firestore_submit_company_data()
 
-        FirestoreAPI.submit_company_overview()
+        Firestore_API.Firestore_submit_company_overview()
 
 
     #function for configuration info
     @staticmethod
-    def set_company_configuration(company, config_dict):
+    def Firestore_set_company_configuration(company, config_dict):
         #get the configuration collection
-        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
+        db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
         company_collection = db.collection('Configuration info')
 
         #get the company document
@@ -163,13 +165,12 @@ class FirestoreAPI:
         company_config_doc.set(config_dict)
 
     @staticmethod
-    def get_company_configuration():
+    def Firestore_get_company_configuration():
         # get the configuration collection
-        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
+        db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
         company_collection = db.collection('Configuration info')
 
         # get the company document
         company_config_doc = company_collection.document(st.session_state.company)
 
         return company_config_doc.get().to_dict()
-

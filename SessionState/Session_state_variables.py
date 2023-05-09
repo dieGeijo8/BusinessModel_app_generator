@@ -1,6 +1,6 @@
 import streamlit as st
 from Configuration.Configuration import return_model_descriptor_copy
-from Firestore.FirestoreAPI import FirestoreAPI
+from DataManagement.DataManagement import DataManagement
 from Questions_settings.Questions_settings import Questions_settings
 from Extensions.Standard_extensions.Checkbox import Checkbox
 from Extensions.Standard_extensions.Plan import Plan
@@ -21,7 +21,7 @@ class Session_state_variables:
             st.session_state['first_textinput_value'] = ''
 
         if 'company_list' not in st.session_state:
-            st.session_state['company_list'] = FirestoreAPI.get_company_list()
+            st.session_state['company_list'] = DataManagement.get_company_list()
 
         if 'dont_display_data' not in st.session_state:
             st.session_state['dont_display_data'] = False
@@ -32,7 +32,7 @@ class Session_state_variables:
     def initialize_company_session_state():
         local_model_descriptor = return_model_descriptor_copy()
 
-        company_data = FirestoreAPI.get_company_data()
+        company_data = DataManagement.get_company_data()
 
         for page in local_model_descriptor.keys():
             for tab in local_model_descriptor[page].keys():
