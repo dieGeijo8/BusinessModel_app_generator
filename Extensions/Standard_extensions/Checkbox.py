@@ -3,13 +3,20 @@ import streamlit as st
 class Checkbox:
 
     name = 'Checkbox'
-    activate_checkbox = True # this is what controls if activate the checkbox or not
+
+    if 'default_activate_checkbox' not in st.session_state:
+        st.session_state.default_activate_checkbox = False
+
+    if 'activate_checkbox' not in st.session_state:
+        st.session_state.activate_checkbox = False
+
+    #activate_checkbox = st.session_state.activate_checkbox# this is what controls if activate the checkbox or not
 
     #decorator to check if activate the checkbox or not
     @staticmethod
     def checkbox_decorator(func):
         def wrapper(*args, **kwargs):
-            if Checkbox.activate_checkbox == False:
+            if st.session_state.activate_checkbox == False:
 
                 a = 0 #just to do something
 
@@ -85,7 +92,7 @@ class Checkbox:
 
     @staticmethod
     def checkbox_disable_othervalues(page, tab, question_code):
-        if Checkbox.activate_checkbox == True:
+        if st.session_state.activate_checkbox == True:
 
             return st.session_state['rendering_checkbox' + Checkbox.get_full_question_code(page, tab, question_code)]
         else:

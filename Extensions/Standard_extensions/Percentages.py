@@ -1,15 +1,24 @@
 import streamlit as st
 from Extensions.Standard_extensions.Plan import Plan
+from Extensions.Standard_extensions.Weights import Weights_per_tab
 
 
 class Percentages:
 
-    activate_percentages = False
+    name = 'Percentages'
+
+    if 'default_activate_percentages' not in st.session_state:
+        st.session_state.default_activate_percentages = True
+
+    if 'activate_percentages' not in st.session_state:
+        st.session_state.activate_percentages = True
+
+    #activate_percentages = st.session_state.activate_percentages
 
     @staticmethod
     def percentages_decorator(func):
         def wrapper(*args, **kwargs):
-            if Percentages.activate_percentages == False:
+            if st.session_state.activate_percentages == False:
 
                 a = 0  # just to do something
 
@@ -38,14 +47,22 @@ class Percentages:
 
         df_ovw['Current'] = [str(Percentages.__conversion_function(x)) + '%' for x in df_ovw['Current'].to_list()]
 
+        Weights_per_tab.weights_per_tab_as_percentages(df_ovw)
+
         Plan.plan_ovw_as_percentage(df_ovw)
 
     @staticmethod
-    def page_overall_as_percentage(scores_overall_dict, key):
+    def overall_as_percentage(scores_overall_dict, key):
 
-        if Percentages.activate_percentages == True:
+        if st.session_state.activate_percentages == True:
 
-            value = str(Percentages.__conversion_function(scores_overall_dict[key])) + '%'
+            if key == 'Plan - Current':
+
+                value = str(Percentages.__conversion_function(scores_overall_dict[Plan.name])\
+                        - Percentages.__conversion_function(scores_overall_dict['Current'])) + '%'
+            else:
+
+                value = str(Percentages.__conversion_function(scores_overall_dict[key])) + '%'
         else:
 
             value = str(scores_overall_dict[key])
@@ -53,11 +70,16 @@ class Percentages:
         return value
 
     @staticmethod
-    def print_overall(scores_per_page_dict, page, key, metrics_titles, metric_title):
-        if Percentages.activate_percentages == True:
+    def page_print_overall(scores_per_page_dict, page, key, metrics_titles, metric_title):
+        if st.session_state.activate_percentages == True:
 
             if metric_title == 'Weight':
                 value = str(round(100 * scores_per_page_dict[page][key], 2))
+
+            elif metric_title == 'Plan - Current':
+
+                value = str(Percentages.__conversion_function(scores_per_page_dict[page][Plan.name])\
+                        - Percentages.__conversion_function(scores_per_page_dict[page]['Current']))
 
             else:
                 value = str(Percentages.__conversion_function(scores_per_page_dict[page][key]))
@@ -91,7 +113,7 @@ class Percentages:
 
     @staticmethod
     def percentages_for_visualizations_thirdmethod():
-        if Percentages.activate_percentages == True:
+        if st.session_state.activate_percentages == True:
             return 1.5
         else:
             return 0.1

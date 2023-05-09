@@ -7,15 +7,19 @@ class Plan:
 
     name = 'Plan'
 
-    if 'plan_extension' not in st.session_state:
-        st.session_state['plan_extension'] = False
-    activate_plan = st.session_state['plan_extension']
+    if 'default_activate_plan' not in st.session_state:
+        st.session_state.default_activate_plan = False
+
+    if 'activate_plan' not in st.session_state:
+        st.session_state.activate_plan = False
+
+    #activate_plan = st.session_state.activate_plan
 
     #decorator to check if the variable activate plan is set to false or true
     @staticmethod
     def plan_decorator(func):
         def wrapper(*args, **kwargs):
-            if Plan.activate_plan == False:
+            if st.session_state.activate_plan == False:
 
                 a = 0 #just to do something
 
@@ -76,10 +80,17 @@ class Plan:
         ovw_aggregated_by_page[page][Plan.name] = round(sum(tabs_plan_values) / len(tabs_plan_values), 2)
 
 
+    @staticmethod
+    def __conversion_function(x):
+
+        new_x = 0 + (100 - 0) * (x - 1) / (5 - 1)
+
+        return round(new_x, 2)
+
     @plan_decorator
     @staticmethod
     def plan_ovw_as_percentage(df_ovw):
-        df_ovw[Plan.name] = [str(round(100 * x / 5, 2)) + '%' for x in df_ovw[Plan.name].to_list()]
+        df_ovw[Plan.name] = [str(Plan.__conversion_function(x)) + '%' for x in df_ovw[Plan.name].to_list()]
 
 
     #methods for the visualization of the aggregated ovw df - they are called in the visualization class
@@ -104,7 +115,7 @@ class Plan:
     #methods for the overall ovw per page display and for the overall ovw display
     @staticmethod
     def ovw_per_page_display_first_method():
-        if Plan.activate_plan == True:
+        if st.session_state.activate_plan == True:
 
             return 3
         else:

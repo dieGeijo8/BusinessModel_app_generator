@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import streamlit as st
+from tries import *
 
 excel_file_directory = 'Configuration/15M.xlsx' #this is now the 'configuration file'
 
@@ -13,6 +14,9 @@ stages = ('1', '2', '3', '4', '5')
 
 #tab subsections titles - here it is manually, it should be via input
 tab_subs_titles = ['Integrated assessment', 'Concept excellence', 'Process Excellence', 'Implementation']
+
+#for NEW model
+#tab_subs_titles = ['Concept excellence', 'Process Excellence', 'Implementation']
 
 
 
@@ -161,10 +165,14 @@ model_ovw_descriptor = excel_get_overview_description()
 #methods to get copies of global variables
 @st.cache_data
 def return_model_descriptor_copy():
+    #for NEW model
+    #return excel_get_model_description_2()
     return model_descriptor.copy()
 
 @st.cache_data
 def return_model_full_descriptor_copy():
+    #for NEW model
+    #return excel_get_full_model_description_2()
     return model_full_descriptor.copy()
 
 @st.cache_data

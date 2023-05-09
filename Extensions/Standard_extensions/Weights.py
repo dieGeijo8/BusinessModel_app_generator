@@ -6,7 +6,13 @@ from Extensions.Standard_extensions.Plan import Plan
 class Weights_per_tab:
 
     name = 'Weight'
-    activate_tab_weights = False
+    #activate_tab_weights = False
+
+    if 'default_activate_tab_weights' not in st.session_state:
+        st.session_state.default_activate_tab_weights = True
+
+    if 'activate_tab_weights' not in st.session_state:
+        st.session_state.activate_tab_weights = st.session_state.default_activate_tab_weights
 
     #this is just here to give a value to weights, in the real case they will be set from the configuration file
     df = pd.read_excel('Configuration/15M.xlsx', sheet_name='Overview', skiprows=3, usecols='A:D,L')
@@ -21,7 +27,7 @@ class Weights_per_tab:
     @staticmethod
     def weights_decorator(func):
         def wrapper(*args, **kwargs):
-            if Weights_per_tab.activate_tab_weights == False:
+            if st.session_state.activate_tab_weights == False:
 
                 a = 0 #just to do something
 
@@ -44,7 +50,10 @@ class Weights_per_tab:
     def add_weights_column(df_ovw):
         df_ovw[Weights_per_tab.name] = Weights_per_tab.tab_weights_list
 
-
+    @weights_decorator
+    @staticmethod
+    def weights_per_tab_as_percentages(df_ovw):
+        df_ovw[Weights_per_tab.name] = [str(round(100*x, 2))+'%' for x in df_ovw[Weights_per_tab.name].tolist()]
 
 
     #returns a dict with the following structure: page(key) - Current(key): average value, Plan(key): average value, weighted just if setted
@@ -107,7 +116,7 @@ class Weights_per_tab:
     @staticmethod
     def get_eventual_weighted_scores_by_page():
 
-        if Weights_per_tab.activate_tab_weights == True:
+        if st.session_state.activate_tab_weights == True:
 
             aggr_dict = Weights_per_tab.__aggregation_with_weights()
             return aggr_dict
@@ -118,15 +127,25 @@ class Weights_per_tab:
             return aggr_dict
 
 
+
+
 class Weights_per_page:
 
-    activate_page_weights = True
+    name = 'Weights_per_page'
+    #activate_page_weights = True
+
+    if 'default_activate_page_weights' not in st.session_state:
+        st.session_state.default_activate_page_weights = True
+
+    if 'activate_page_weights' not in st.session_state:
+        st.session_state.activate_page_weights = st.session_state.default_activate_page_weights
+
     pages_weights_list = dict(zip(pages, [0.25, 0.25, 0.25, 0.10, 0.15]))
 
     @staticmethod
     def page_weights_decorator(func):
         def wrapper(*args, **kwargs):
-            if Weights_per_page.activate_page_weights == False:
+            if st.session_state.activate_page_weights == False:
 
                 a = 0 #just to do something
 
@@ -140,7 +159,7 @@ class Weights_per_page:
     #methods for per page ovw display
     @staticmethod
     def display_page_weights_first_method(columns_number):
-        if Weights_per_page.activate_page_weights == True:
+        if st.session_state.activate_page_weights == True:
 
             columns_number = columns_number + 1
             return columns_number
@@ -172,11 +191,11 @@ class Weights_per_page:
 
         for page in pages:
 
-            if Weights_per_page.activate_page_weights == True:
+            if st.session_state.activate_page_weights == True:
 
                 current_per_page_list.append(scores_per_page_dict[page]['Current']*Weights_per_page.pages_weights_list[page])
 
-                if Plan.activate_plan == True:
+                if st.session_state.activate_plan == True:
                    plan_per_page_list.append(scores_per_page_dict[page][Plan.name]*Weights_per_page.pages_weights_list[page])
 
                 weights_per_page.append(Weights_per_page.pages_weights_list[page])
@@ -185,11 +204,11 @@ class Weights_per_page:
 
                 current_per_page_list.append(scores_per_page_dict[page]['Current'])
 
-                if Plan.activate_plan == True:
+                if st.session_state.activate_plan == True:
                     plan_per_page_list.append(scores_per_page_dict[page][Plan.name])
 
 
-        if Weights_per_page.activate_page_weights == True:
+        if st.session_state.activate_page_weights == True:
 
             current_score = round(sum(current_per_page_list) / sum(weights_per_page), 2)
             plan_score = round(sum(plan_per_page_list) / sum(weights_per_page), 2)

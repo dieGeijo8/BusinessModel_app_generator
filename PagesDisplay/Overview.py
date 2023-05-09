@@ -34,7 +34,7 @@ class Overview:
 
             with column_widget:
 
-                value = Percentages.page_overall_as_percentage(scores_overall_dict, key)
+                value = Percentages.overall_as_percentage(scores_overall_dict, key)
 
                 st.metric(label=metrics_titles[metric_title], value=value)
 
@@ -71,7 +71,7 @@ class Overview:
 
             with column_widget:
 
-                Percentages.print_overall(scores_per_page_dict, page, key, metrics_titles, metric_title)
+                Percentages.page_print_overall(scores_per_page_dict, page, key, metrics_titles, metric_title)
 
 
     @staticmethod

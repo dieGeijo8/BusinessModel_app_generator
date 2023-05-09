@@ -23,7 +23,12 @@ class FirestoreAPI:
 
             collections_names.append(collection.id)
 
+        if 'Configuration info' in collections_names:
+            collections_names.remove('Configuration info')
+
         return collections_names
+
+
 
     #'main' method
     #returns a dictionary with the following structure page(key) - tab(key) - question code(key) - {'Stage': value, 'Remarks': value}
@@ -142,3 +147,29 @@ class FirestoreAPI:
         FirestoreAPI.submit_company_data()
 
         FirestoreAPI.submit_company_overview()
+
+
+    #function for configuration info
+    @staticmethod
+    def set_company_configuration(company, config_dict):
+        #get the configuration collection
+        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
+        company_collection = db.collection('Configuration info')
+
+        #get the company document
+        company_config_doc = company_collection.document(company)
+
+        #set the configuration info
+        company_config_doc.set(config_dict)
+
+    @staticmethod
+    def get_company_configuration():
+        # get the configuration collection
+        db = google.cloud.firestore.Client.from_service_account_json("Firestore/firestore_key.json")
+        company_collection = db.collection('Configuration info')
+
+        # get the company document
+        company_config_doc = company_collection.document(st.session_state.company)
+
+        return company_config_doc.get().to_dict()
+
