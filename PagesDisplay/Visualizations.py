@@ -104,11 +104,10 @@ class Visualizations:
 
 
         fig = go.Figure()
+        Plan.ovw_radarchart_plan(fig, subset_df_ovw)
         fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Current'].tolist(), theta=subset_df_ovw['Tab'].tolist(), name='Current',
                                       fill='toself',
                                       line_color='#42A7B3'))
-
-        Plan.ovw_radarchart_plan(fig, subset_df_ovw)
 
 
         fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[1, 5.1])), showlegend=True)
