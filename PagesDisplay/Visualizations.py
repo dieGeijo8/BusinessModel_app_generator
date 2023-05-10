@@ -1,7 +1,9 @@
-from Configuration.Configuration import pages, pages_names
-from SessionState.Session_state_dataframes import Session_state_dataframes
 import plotly.express as px
 import plotly.graph_objects as go
+from wordcloud import WordCloud, STOPWORDS
+from Configuration.Configuration import pages, pages_names, return_model_descriptor_copy
+from Questions_settings.Questions_settings import Questions_settings
+from SessionState.Session_state_dataframes import Session_state_dataframes
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Percentages import Percentages
 import numpy as np
@@ -51,6 +53,34 @@ class Visualizations:
         fig.update_layout(bargap=0.5, yaxis_range=[0, 5.5])
 
         return fig
+
+    @staticmethod
+    def remarks_wordcloud(page):
+        local_model_descriptor = return_model_descriptor_copy()
+
+        stopwords = set(STOPWORDS)
+        text = ''
+
+        for tab in local_model_descriptor[page].keys():
+            for question_code in local_model_descriptor[page][tab]:
+
+                question_data = Questions_settings.get_question_data_values(page, tab, question_code)
+
+                text += question_data['Remarks']
+
+        if text == '':
+
+            return 'Not enough words.'
+        else:
+
+            wordcloud = WordCloud(width=600, height=400,
+                                  background_color='white',
+                                  stopwords=stopwords,
+                                  min_font_size=10).generate(text)
+
+            return wordcloud.to_array()
+
+
 
     @staticmethod
     def overview_barplot():

@@ -96,7 +96,7 @@ class Questions_settings:
     def remarks_callback(page, tab, question_code):
 
         st.session_state['rendering_remarks' + Questions_settings.get_full_question_code(page, tab, question_code)] = \
-            int(st.session_state['remarks' + Questions_settings.get_full_question_code(page, tab, question_code)])
+            st.session_state['remarks' + Questions_settings.get_full_question_code(page, tab, question_code)]
 
     # method in Pages_display - display single question
     @staticmethod

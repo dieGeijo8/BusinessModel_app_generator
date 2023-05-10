@@ -42,6 +42,12 @@ class DataManagement:
 
         return ovw_plan
 
+    @staticmethod
+    def get_company_overview_ideas():
+        ovw_ideas = Firestore_API.Firestore_get_company_overview_ideas()
+
+        return ovw_ideas
+
     #submit the current value of the session state variable ovw
     @staticmethod
     def submit_company_overview():

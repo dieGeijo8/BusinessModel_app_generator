@@ -15,6 +15,16 @@ class Plan:
 
     #activate_plan = st.session_state.activate_plan
 
+    #very simple support method for divider display
+    @staticmethod
+    def return_activated_plan():
+        if st.session_state.activate_plan == True:
+
+            return True
+        else:
+
+            return False
+
     #decorator to check if the variable activate plan is set to false or true
     @staticmethod
     def plan_decorator(func):
@@ -32,7 +42,7 @@ class Plan:
     @plan_decorator
     @staticmethod
     def initialize_plan(ovw):
-        ovw['Plan'] = DataManagement.get_company_overview_plan()
+        ovw[Plan.name] = DataManagement.get_company_overview_plan()
 
 
     @plan_decorator

@@ -133,6 +133,28 @@ class Firestore_API:
 
             return dict(zip(tabs, [1]*len(tabs)))
 
+    @staticmethod
+    def Firestore_get_company_overview_ideas():
+        company_collection = Firestore_API.Firestore_get_company_collection()
+
+        company_ovw_document = company_collection.document('overview')
+
+        local_model_descriptor = return_model_descriptor_copy()
+
+        try:
+            ovw_ideas_values = company_ovw_document.get().to_dict()
+
+            return ovw_ideas_values['Ideas']
+
+        except:
+            tabs = []
+
+            for page in local_model_descriptor.keys():
+                for tab in local_model_descriptor[page].keys():
+                    tabs.append(tab)
+
+            return dict(zip(tabs, ['']*len(tabs)))
+
     #submit the current value of the session state variable ovw
     @staticmethod
     def Firestore_submit_company_overview():

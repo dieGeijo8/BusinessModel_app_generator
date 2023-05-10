@@ -2,10 +2,55 @@ from Configuration.Configuration import return_model_full_descriptor_copy, tab_s
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
 from Extensions.Standard_extensions.Plan import Plan
+from Extensions.Standard_extensions.Ideas import Ideas
 import streamlit as st
 
 class Page_display:
 
+    @staticmethod
+    def __dashboard_display(page):
+        st.header(st.session_state.company + ' - ' + 'page ' + page)
+        # lineplot
+        st.subheader('Stage value by question')
+
+        lp = Visualizations.stages_line_plot(page)
+
+        st.plotly_chart(lp, theme="streamlit", use_container_width=True)
+
+        with st.expander('Line plot description'):
+            st.write('The line plot above shows the stage value for each question of the page. The color of the line indicates the tab of the question.')
+
+        st.write('')
+        st.write('')
+
+        # barplot
+        st.subheader('Average stage value by tab')
+
+        bp = Visualizations.stages_barplot(page)
+
+        st.plotly_chart(bp, theme="streamlit", use_container_width=True)
+
+        with st.expander('Bar plot description'):
+            st.write('The bar plot above shows the average stage value per each tab of the page.')
+
+        st.write('')
+        st.write('')
+
+        # wordlocud
+        st.subheader('Remarks most frequent words')
+
+        wc = Visualizations.remarks_wordcloud(page)
+
+        if isinstance(wc, str):
+
+            st.warning(wc)
+        else:
+            st.write('')
+
+            st.image(wc)
+
+            with st.expander('Word cloud explanation'):
+                st.write('The Remarks of each question of the page are grouped into a single text that is used to produce this word cloud. It shows the most frequent words and the size of the word is proportional to the relative frequency.')
 
     #method to display a page - the way the tab subsection titles are printed should change when switching to configuration file
     @staticmethod
@@ -25,7 +70,15 @@ class Page_display:
                 with col2:
                     st.warning('The company selected is: ' + st.session_state.company)
 
+                if Plan.return_activated_plan() or Ideas.return_activated_ideas():
+                    st.write('---')
+
                 Plan.print_slider(tab)
+
+                Ideas.print_textarea(tab)
+
+                if Plan.return_activated_plan() or Ideas.return_activated_ideas():
+                    st.write('---')
 
                 i = 0
                 question_codes = list(local_model_full_descriptor[page][tab].keys())
@@ -46,12 +99,6 @@ class Page_display:
                     st.write(' ')
 
         with tabs[-1]:
-            # lineplot
-            lp = Visualizations.stages_line_plot(page)
 
-            st.plotly_chart(lp, theme="streamlit", use_container_width=True)
+            Page_display.__dashboard_display(page)
 
-            #barplot
-            bp = Visualizations.stages_barplot(page)
-
-            st.plotly_chart(bp, theme="streamlit", use_container_width=True)

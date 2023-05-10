@@ -7,6 +7,7 @@ from Configuration.Configuration import pages, pages_names
 from Extensions.Standard_extensions.Weights import Weights_per_tab, Weights_per_page
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Percentages import Percentages
+from Extensions.Standard_extensions.Ideas import Ideas
 
 
 class Overview:
@@ -159,3 +160,7 @@ class Overview:
             with st.expander('Radar chart description'):
                 st.write('The above graph shows the average current and plan(if selected) score per each tab of the model. By selecting the page through the scrollable menu on the left you can explore all the tabs of the model by page.')
 
+            st.write('')
+            st.write('')
+
+            Ideas.ideas_keywords_by_page_visualization()

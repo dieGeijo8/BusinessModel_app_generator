@@ -4,6 +4,7 @@ from DataManagement.DataManagement import DataManagement
 from Questions_settings.Questions_settings import Questions_settings
 from Extensions.Standard_extensions.Checkbox import Checkbox
 from Extensions.Standard_extensions.Plan import Plan
+from Extensions.Standard_extensions.Ideas import Ideas
 
 class Session_state_variables:
 
@@ -76,9 +77,12 @@ class Session_state_variables:
         ovw = {}
         ovw['Current'] = scores_per_tab
 
-        #standard extension
+        #standard extensions
         Plan.initialize_plan(ovw)
-        print(ovw)
+
+        Ideas.initialize_ideas(ovw)
+
+
         st.session_state['overview'] = ovw
 
     # update the current values of the session state ovw dictionary

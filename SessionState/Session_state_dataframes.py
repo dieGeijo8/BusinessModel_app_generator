@@ -5,6 +5,7 @@ from Configuration.Configuration import return_model_descriptor_copy, return_mod
 from Extensions.Standard_extensions.Checkbox import Checkbox
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Weights import Weights_per_tab
+from Extensions.Standard_extensions.Ideas import Ideas
 
 
 class Session_state_dataframes:
@@ -58,14 +59,17 @@ class Session_state_dataframes:
         df_ovw['Current'] = [st.session_state['overview']['Current'][tab] for tab in
                              st.session_state['overview']['Current'].keys()]
 
-        # standard extension
+        # standard extensions
         Plan.add_plan_to_ovw(df_ovw)
+
+        Ideas.add_ideas_to_ovw(df_ovw)
 
         # reorder columns
         ordered_columns_list = ['Tab', 'Description', 'Current']
 
         # standard extensions
         Plan.add_plan_to_column_list(ordered_columns_list)
+        Ideas.add_ideas_to_column_list(ordered_columns_list)
         Weights_per_tab.add_weights_to_columnslist(ordered_columns_list)
 
         df_ovw = df_ovw[ordered_columns_list]
