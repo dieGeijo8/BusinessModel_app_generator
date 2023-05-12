@@ -10,7 +10,7 @@ pages = ['1', '2', '3', '4', '5']
 pages_names = ['Procurement Framework Strategy', 'Category strategies', 'Supplier strategies',
                'Process strategies', 'Procurement performance management']
 
-stages = ('1', '2', '3', '4')#, '5')
+stages = ('1', '2', '3', '4', '5')
 max_stage = max([int(x) for x in stages])
 
 #tab subsections titles - here it is manually, it should be via input

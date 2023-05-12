@@ -4,11 +4,14 @@ class Checkbox:
 
     name = 'Checkbox'
 
-    if 'default_activate_checkbox' not in st.session_state:
-        st.session_state.default_activate_checkbox = False
+    @staticmethod
+    def set():
 
-    if 'activate_checkbox' not in st.session_state:
-        st.session_state.activate_checkbox = False
+        if 'default_activate_checkbox' not in st.session_state:
+            st.session_state.default_activate_checkbox = False
+
+        if 'activate_checkbox' not in st.session_state:
+            st.session_state.activate_checkbox = False
 
     #activate_checkbox = st.session_state.activate_checkbox# this is what controls if activate the checkbox or not
 

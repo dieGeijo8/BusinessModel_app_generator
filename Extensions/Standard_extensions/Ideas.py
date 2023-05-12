@@ -7,11 +7,14 @@ class Ideas:
 
     name = 'Ideas'
 
-    if 'default_activate_ideas' not in st.session_state:
-        st.session_state.default_activate_ideas = False
+    @staticmethod
+    def set():
 
-    if 'activate_ideas' not in st.session_state:
-        st.session_state.activate_ideas = False
+        if 'default_activate_ideas' not in st.session_state:
+            st.session_state.default_activate_ideas = False
+
+        if 'activate_ideas' not in st.session_state:
+            st.session_state.activate_ideas = False
 
     # very simple support method for divider display
     @staticmethod
@@ -68,6 +71,8 @@ class Ideas:
             if tab[:1] == page:
 
                 page_text += st.session_state['overview']['Ideas'][tab]
+
+                page_text += ' '
 
         r =Rake()
         r.extract_keywords_from_text(page_text)

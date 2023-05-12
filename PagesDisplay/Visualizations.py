@@ -18,7 +18,7 @@ class Visualizations:
         df = Session_state_dataframes.get_df_page_visualizations(page)
 
         fig = px.line(df, x='Code', y='Stage', color='Tab', color_discrete_sequence=px.colors.qualitative.Vivid[:len(np.unique(df['Tab']).tolist())],
-                      markers=True, labels=dict(IDs='Question code'))
+                      markers=True, labels={'Code':'Question'})#dict(IDs='Question code'))
 
         fig.update_layout(xaxis=dict(ticklabelstep=100, tickfont=dict(size=1), showgrid= True, tickangle=-45))
         fig.update_layout(yaxis=dict(tickvals=[1, 2, 3, 4, 5], showgrid=True))
@@ -44,7 +44,8 @@ class Visualizations:
 
         #figure
         fig = px.bar(grouped_df, x='Tab', y='Stage', color='Tab',
-                     color_discrete_sequence=px.colors.qualitative.Vivid[:len(np.unique(sub_df['Tab']).tolist())])
+                     color_discrete_sequence=px.colors.qualitative.Vivid[:len(np.unique(sub_df['Tab']).tolist())],
+                     labels={'Stage':'Average stage'})
 
         fig.update_traces(width=0.5, showlegend=False)
         fig.update_layout(xaxis=dict(tickvals=grouped_df['Tab'].tolist(),
@@ -68,7 +69,10 @@ class Visualizations:
 
                 text += question_data['Remarks']
 
-        if text == '':
+            text += ' '
+
+
+        if text.replace(' ', '') == '':
 
             return 'Not enough words.'
         else:
@@ -97,13 +101,15 @@ class Visualizations:
         #standard extension
         Plan.add_plan_to_column_list(y_list)
 
-        fig = px.bar(df, x='Page', y=y_list, color_discrete_sequence=['#42A7B3', '#FFC000'], barmode='group',
-                     hover_data=['Page name'])
+        fig = px.bar(df, x='Page', y=y_list, color_discrete_sequence=['#42A7B3', '#FFC000'], barmode='group', labels={'value':'Value'})
 
         fig.update_layout(yaxis_range=[-0.5, 5.5], bargap=0.5)
 
         #standard extension
         Percentages.percentages_for_visualizations_secondmethod(fig)
+
+        fig.update_traces(hovertemplate="Value: %{y}<br>Page: %{x}<br>")
+
 
         annotation_y = Percentages.percentages_for_visualizations_thirdmethod()
 
@@ -144,6 +150,8 @@ class Visualizations:
         fig.update_polars(angularaxis_linewidth=0.1)
 
         Percentages.percentages_for_visualizations_fourthmethod(fig)
+
+        fig.update_traces(hovertemplate="Value: %{r}<br>Tab: %{theta}<br>")
 
         return fig
 

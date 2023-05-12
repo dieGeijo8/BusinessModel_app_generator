@@ -1,4 +1,5 @@
 import streamlit as st
+from Configuration.Configuration import max_stage
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Weights import Weights_per_tab
 
@@ -7,11 +8,14 @@ class Percentages:
 
     name = 'Percentages'
 
-    if 'default_activate_percentages' not in st.session_state:
-        st.session_state.default_activate_percentages = True
+    @staticmethod
+    def set():
 
-    if 'activate_percentages' not in st.session_state:
-        st.session_state.activate_percentages = True
+        if 'default_activate_percentages' not in st.session_state:
+            st.session_state.default_activate_percentages = True
+
+        if 'activate_percentages' not in st.session_state:
+            st.session_state.activate_percentages = True
 
     #activate_percentages = st.session_state.activate_percentages
 
@@ -34,7 +38,7 @@ class Percentages:
     @staticmethod
     def __conversion_function(x):
 
-        new_x = 0 + (100 - 0) * (x - 1) / (5 - 1)
+        new_x = 0 + (100 - 0) * (x - 1) / (max_stage - 1)
 
         return round(new_x, 2)
 
@@ -58,8 +62,8 @@ class Percentages:
 
             if key == 'Plan - Current':
 
-                value = str(Percentages.__conversion_function(scores_overall_dict[Plan.name])\
-                        - Percentages.__conversion_function(scores_overall_dict['Current'])) + '%'
+                value = str(round(Percentages.__conversion_function(scores_overall_dict[Plan.name])\
+                        - Percentages.__conversion_function(scores_overall_dict['Current']), 2)) + '%'
             else:
 
                 value = str(Percentages.__conversion_function(scores_overall_dict[key])) + '%'
@@ -99,7 +103,7 @@ class Percentages:
 
             if isinstance(df[column].tolist()[0], (int, float)) == True:
 
-                df[column] = [100*x/5 for x in df[column].tolist()]
+                df[column] = [Percentages.__conversion_function(x) for x in df[column].tolist()]
 
     @percentages_decorator
     @staticmethod

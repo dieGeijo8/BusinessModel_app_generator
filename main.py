@@ -1,18 +1,21 @@
+import time
+
 import streamlit as st
 from SessionState.Session_state_variables import Session_state_variables
 from DataManagement.DataManagement import DataManagement
 from Thread_safety.ThreadSafety import ThreadSafety
 from Extensions.Standard_extensions.StandardExtensions_configuration import StandardExtensions_configuration
+from Checks.Checks import Checks
 
 #add the written company to the company list to make it selectable from the select box
-def callback_textinput():
-
-    st.session_state.company_list.append(st.session_state.textinput_value)
-
-    ThreadSafety.add_company_to_lock(st.session_state.textinput_value)
-
-    st.session_state.textinput_value = ''
-    st.session_state.first_textinput_value = ''
+# def callback_textinput():
+#
+#     st.session_state.company_list.append(st.session_state.textinput_value)
+#
+#     ThreadSafety.add_company_to_lock(st.session_state.textinput_value)
+#
+#     st.session_state.textinput_value = ''
+#     st.session_state.first_textinput_value = ''
 
 #change session state company - delete if needed and initialize
 def callback_selectbox():
@@ -48,16 +51,23 @@ def company_registration_form():
         registered = st.form_submit_button('Register company')
 
         if registered:
-            #make the new company selectable
-            st.session_state.company_list.append(st.session_state.textinput_value)
 
-            ThreadSafety.add_company_to_lock(st.session_state.textinput_value)
+            if Checks.check_if_company_valid(st.session_state.textinput_value) == True:
 
-            #set the configuration
-            StandardExtensions_configuration.set_extension_config()
+                #make the new company selectable
+                st.session_state.company_list.append(st.session_state.textinput_value)
 
-            #needed to update the company list
-            st.experimental_rerun()
+                ThreadSafety.add_company_to_lock(st.session_state.textinput_value)
+
+                #set the configuration
+                StandardExtensions_configuration.set_extension_config()
+
+                #needed to update the company list
+                st.experimental_rerun()
+
+            else:
+
+                st.warning('Invalid company')
 
 
 

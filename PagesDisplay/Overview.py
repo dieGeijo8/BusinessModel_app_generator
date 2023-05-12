@@ -29,7 +29,7 @@ class Overview:
         metrics_titles = {'Current': 'Overall current'}
 
         # standard extension
-        Plan.ovw_per_page_display_third_method(metrics_titles)
+        Plan.ovw_overall_display_third_method(metrics_titles)
 
         for key, column_widget, metric_title in zip(scores_overall_dict.keys(), columns, metrics_titles.keys()):
 

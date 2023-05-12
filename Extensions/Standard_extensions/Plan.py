@@ -7,11 +7,14 @@ class Plan:
 
     name = 'Plan'
 
-    if 'default_activate_plan' not in st.session_state:
-        st.session_state.default_activate_plan = False
+    @staticmethod
+    def set():
 
-    if 'activate_plan' not in st.session_state:
-        st.session_state.activate_plan = False
+        if 'default_activate_plan' not in st.session_state:
+            st.session_state.default_activate_plan = False
+
+        if 'activate_plan' not in st.session_state:
+            st.session_state.activate_plan = False
 
     #activate_plan = st.session_state.activate_plan
 
@@ -147,6 +150,13 @@ class Plan:
     @staticmethod
     def ovw_overall_display_second_method(scores_dict):
         scores_dict['Plan - Current'] = round(scores_dict['Plan'] - scores_dict['Current'], 2)
+
+    @plan_decorator
+    @staticmethod
+    def ovw_overall_display_third_method(metrics_titles):
+
+        metrics_titles['Plan'] = 'Overall plan'
+        metrics_titles['Plan - Current'] = 'Overall plan - current'
 
 
 

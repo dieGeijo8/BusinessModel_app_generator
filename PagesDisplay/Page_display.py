@@ -1,4 +1,4 @@
-from Configuration.Configuration import return_model_full_descriptor_copy, tab_subs_titles
+from Configuration.Configuration import return_model_full_descriptor_copy, tab_subs_titles, pages_names
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
 from Extensions.Standard_extensions.Plan import Plan
@@ -18,7 +18,7 @@ class Page_display:
         st.plotly_chart(lp, theme="streamlit", use_container_width=True)
 
         with st.expander('Line plot description'):
-            st.write('The line plot above shows the stage value for each question of the page. The color of the line indicates the tab of the question.')
+            st.write('The line plot above shows the stage value for each question of the page. The questions are identified with a code that has the following structure: Tab number-Initials of the name of the subsection-Question number inside the subsection. The color of the line indicates the tab of the question.')
 
         st.write('')
         st.write('')
@@ -58,10 +58,17 @@ class Page_display:
         local_model_full_descriptor = return_model_full_descriptor_copy()
 
         page_tabs = list(local_model_full_descriptor[page].keys())
+        page_tabs.insert(0, 'Intro')
         page_tabs.append('Dashboard')
+
         tabs = st.tabs(page_tabs)
 
-        for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[:-1]):
+        with tabs[0]:
+            st.header(pages_names[int(page) - 1])
+
+            st.write('some text')
+
+        for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[1:-1]):
             with tab_widget:
 
                 col1, col2 = st.columns(2)

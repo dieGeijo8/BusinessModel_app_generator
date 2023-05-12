@@ -10,10 +10,20 @@ class StandardExtensions_configuration:
 
     @staticmethod
     def extension_form():
+
+        Plan.set()
+        Percentages.set()
+        Checkbox.set()
+        Ideas.set()
+
         st.checkbox('Plan extension', value=st.session_state.default_activate_plan, key='plan_extension')
         st.checkbox('Percentage extension', value=st.session_state.default_activate_percentages, key='percentage_extension')
         st.checkbox('Checkbox extension', value=st.session_state.default_activate_checkbox, key='checkbox_extension')
         st.checkbox('Ideas extension', value=st.session_state.default_activate_ideas, key='ideas_extension')
+
+
+        Weights_per_page.set()
+        Weights_per_tab.set()
 
         if st.session_state.default_activate_tab_weights == True:
             st.checkbox('Tab weights extension', value=st.session_state.default_activate_tab_weights, key='tab_weights_extension')

@@ -8,11 +8,13 @@ class Weights_per_tab:
     name = 'Weight'
     #activate_tab_weights = False
 
-    if 'default_activate_tab_weights' not in st.session_state:
-        st.session_state.default_activate_tab_weights = True
+    @staticmethod
+    def set():
+        if 'default_activate_tab_weights' not in st.session_state:
+            st.session_state.default_activate_tab_weights = True
 
-    if 'activate_tab_weights' not in st.session_state:
-        st.session_state.activate_tab_weights = st.session_state.default_activate_tab_weights
+        if 'activate_tab_weights' not in st.session_state:
+            st.session_state.activate_tab_weights = st.session_state.default_activate_tab_weights
 
     #this is just here to give a value to weights, in the real case they will be set from the configuration file
     df = pd.read_excel('Configuration/15M.xlsx', sheet_name='Overview', skiprows=3, usecols='A:D,L')
@@ -134,11 +136,13 @@ class Weights_per_page:
     name = 'Weights_per_page'
     #activate_page_weights = True
 
-    if 'default_activate_page_weights' not in st.session_state:
-        st.session_state.default_activate_page_weights = True
+    @staticmethod
+    def set():
+        if 'default_activate_page_weights' not in st.session_state:
+            st.session_state.default_activate_page_weights = True
 
-    if 'activate_page_weights' not in st.session_state:
-        st.session_state.activate_page_weights = st.session_state.default_activate_page_weights
+        if 'activate_page_weights' not in st.session_state:
+            st.session_state.activate_page_weights = st.session_state.default_activate_page_weights
 
     pages_weights_list = dict(zip(pages, [0.25, 0.25, 0.25, 0.10, 0.15]))
 
