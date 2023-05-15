@@ -4,10 +4,12 @@ import pandas as pd
 
 class ParseConfigFile:
 
-    config_file_sheet1 = pd.read_excel('RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
+    config_file_sheet1 = pd.read_excel('Configuration/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
+    config_file_sheet2 = pd.read_excel('Configuration/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelOverview')
 
+    # pages and pages names
     @staticmethod
-    def get_page_list():
+    def get_pages_list():
 
         number_of_pages = len(ParseConfigFile.config_file_sheet1['Page'].unique())
 
@@ -22,6 +24,11 @@ class ParseConfigFile:
 
         return pages_names
 
+
+
+    # model descriptor and model full descriptor
+
+    # support methods to get the different partial parts of the model
     @staticmethod
     def get_tabs_by_page(page_name):
 
@@ -53,6 +60,7 @@ class ParseConfigFile:
 
         return stages
 
+    # this is used also in the page display for the subsections titles
     @staticmethod
     def get_subsections_by_tab(page_name, tab_name):
 
@@ -79,9 +87,9 @@ class ParseConfigFile:
 
         subsections = ParseConfigFile.get_subsections_by_tab(page_name, tab_name)
 
-        if math.isnan(subsections[0]) == True:
+        if isinstance(subsections[0], float) == True:
 
-            question_codes = [str(x+1) for x in range(len(ParseConfigFile.get_questions_by_tab(page_name, tab_name)))]
+            question_codes = ['nc_' + str(x+1) for x in range(len(ParseConfigFile.get_questions_by_tab(page_name, tab_name)))]
 
             return question_codes
         else:
@@ -90,13 +98,13 @@ class ParseConfigFile:
 
             for subsection in subsections:
 
-                subsection_codes = [subsection+str(x+1) for x in range(len(ParseConfigFile.get_questions_by_subsection(page_name, tab_name, subsection)))]
+                subsection_codes = [subsection.replace(' ', '') + '_' + str(x+1) for x in range(len(ParseConfigFile.get_questions_by_subsection(page_name, tab_name, subsection)))]
 
-                question_codes.append(subsection_codes)
+                question_codes += subsection_codes
 
             return question_codes
 
-
+    # model descriptor - support for numeric model descriptor
     @staticmethod
     def get_model_descriptor():
         pages_names = ParseConfigFile.get_pages_names_list()
@@ -115,13 +123,37 @@ class ParseConfigFile:
 
         return model_descriptor
 
+    # numeric model descriptor
+    @staticmethod
+    def get_numeric_model_descriptor():
+        model_descriptor = ParseConfigFile.get_model_descriptor().copy()
+        final_model_descriptor = {}
+
+        pages = ParseConfigFile.get_pages_list()
+        pages_names = ParseConfigFile.get_pages_names_list()
+
+        pages_dict = dict(zip(pages_names, pages))
+
+        for page in model_descriptor.keys():
+
+            final_model_descriptor[pages_dict[page]] = {}
+            tab_index = 1
+            for tab in model_descriptor[page].keys():
+
+                final_model_descriptor[pages_dict[page]][pages_dict[page]+'.'+str(tab_index)] = model_descriptor[page][tab]
+                tab_index += 1
+
+        return final_model_descriptor
+
+
+    # model full descriptor - support for numeric model full descriptor
     @staticmethod
     def get_model_full_descriptor():
-        pages_names = ParseConfigFile.get_pages_names_list()
+        pages = ParseConfigFile.get_pages_names_list()
 
         model_descriptor = {}
 
-        for page in pages_names:
+        for page in pages:
 
             model_descriptor[page] = {}
 
@@ -132,12 +164,73 @@ class ParseConfigFile:
 
                 for question_code, question in zip(question_codes, questions):
 
+                    #print(question_code)
+
                     model_descriptor[page][tab] = {}
                     model_descriptor[page][tab][question_code] = {}
                     model_descriptor[page][tab][question_code][question] = ParseConfigFile.get_stage_descriptions_by_question(page, tab, question)
 
         return model_descriptor
 
+    @staticmethod
+    def get_numeric_model_full_descriptor():
+        model_descriptor = ParseConfigFile.get_model_full_descriptor().copy()
+        final_model_descriptor = {}
+
+        pages = ParseConfigFile.get_pages_list()
+        pages_names = ParseConfigFile.get_pages_names_list()
+
+        pages_dict = dict(zip(pages_names, pages))
+
+        for page in model_descriptor.keys():
+
+            final_model_descriptor[pages_dict[page]] = {}# model_descriptor[page]
+            tab_index = 1
+            for tab in model_descriptor[page].keys():
+
+                final_model_descriptor[pages_dict[page]][pages_dict[page]+'.'+str(tab_index)] = model_descriptor[page][tab]
+                tab_index += 1
+
+        return final_model_descriptor
+
+
+
+    # page and tabs dictionary - used in page display for displaying tab and subsections titles
+    @staticmethod
+    def get_page_dictionary():
+        model_descriptor = ParseConfigFile.get_model_descriptor().copy()
+        model_numeric_descriptor = ParseConfigFile.get_numeric_model_descriptor().copy()
+
+        pages = []
+        pages_numbers = []
+
+        for page, page_number in zip(model_descriptor.keys(), model_numeric_descriptor.keys()):
+            pages.append(page)
+            pages_numbers.append(page_number)
+
+        return dict(zip(pages_numbers, pages))
+
+    @staticmethod
+    def get_tab_dictionary():
+        model_descriptor = ParseConfigFile.get_model_descriptor().copy()
+        model_numeric_descriptor = ParseConfigFile.get_numeric_model_descriptor().copy()
+
+        tabs = []
+        tabs_numbers = []
+
+        for page, page_number in zip(model_descriptor.keys(), model_numeric_descriptor.keys()):
+            for tab, tab_number in zip(model_descriptor[page].keys(), model_numeric_descriptor[page_number].keys()):
+
+                tabs.append(tab)
+                tabs_numbers.append(tab_number)
+
+        #print(dict(zip(tabs_numbers, tabs)))
+        return dict(zip(tabs_numbers, tabs))
+
+
+
+
+    # stages
     @staticmethod
     def get_stages_list():
 
@@ -151,6 +244,7 @@ class ParseConfigFile:
 
     @staticmethod
     def get_max_stage():
+
         columns = list(ParseConfigFile.config_file_sheet1.columns)
 
         number_of_stages = len(columns[4:])
@@ -162,6 +256,44 @@ class ParseConfigFile:
 
 
 
+    # ovw
+    @staticmethod
+    def get_model_ovw_descriptor():
+
+        df = ParseConfigFile.config_file_sheet2.copy()
+
+        df['Description'] = ['' if math.isnan(x) else x for x in df['Description'].tolist()]
+
+        tabs_numbers = list(ParseConfigFile.get_tab_dictionary().keys())
+
+        ovw_df = pd.DataFrame.from_dict({'Tab number': tabs_numbers, 'Tab': df['Tab'].tolist(), 'Description': df['Description'].tolist()})
+
+        return ovw_df
+
+
+
+    # tab and page weights
+    @staticmethod
+    def get_tab_weights():
+
+        df = ParseConfigFile.config_file_sheet2.copy()
+
+        tab_weigths_list = df['Tab weight'].tolist()
+
+        return tab_weigths_list
+
+    @staticmethod
+    def get_page_weights():
+
+        df = ParseConfigFile.config_file_sheet2.copy()
+
+        tab_weigths_list = df['Page weight'].unique()
+
+        return tab_weigths_list.tolist()
+
+
+
+
 if __name__ == "__main__":
 
-    print(ParseConfigFile.get_model_full_descriptor())
+    print(ParseConfigFile.get_numeric_model_full_descriptor())

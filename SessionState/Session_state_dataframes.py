@@ -65,7 +65,7 @@ class Session_state_dataframes:
         Ideas.add_ideas_to_ovw(df_ovw)
 
         # reorder columns
-        ordered_columns_list = ['Tab', 'Description', 'Current']
+        ordered_columns_list = ['Tab number', 'Tab', 'Description', 'Current']
 
         # standard extensions
         Plan.add_plan_to_column_list(ordered_columns_list)

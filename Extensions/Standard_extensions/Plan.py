@@ -113,12 +113,14 @@ class Plan:
         plan_avg = sum(df[Plan.name].tolist()) / len(df[Plan.name].tolist())
         fig.add_shape(type="line", line_color='black', line_width=2, opacity=0.5, line_dash="dot",
                       x0=0, x1=1, xref="paper", y0=plan_avg, y1=plan_avg, yref="y")
-        fig.add_annotation(text='Avg. planned value', x='5', y=plan_avg + annotation_y, showarrow=False)
+        fig.add_annotation(text='Avg. planned value', x=df['Page'].tolist()[len(df['Page'].tolist()) - 1],
+                      y=plan_avg + annotation_y, showarrow=False)
 
     @plan_decorator
     @staticmethod
     def ovw_radarchart_plan(fig, subset_df_ovw):
-        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Plan'].tolist(), theta=subset_df_ovw['Tab'].tolist(), name='Plan',
+        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Plan'].tolist(), theta=subset_df_ovw['Tab number'].tolist(), name='Plan',
+                                      customdata=subset_df_ovw['Tab name'].tolist(),
                                       fill='toself',
                                       line_color='#FFC000'))
 

@@ -1,4 +1,7 @@
-from Configuration.Configuration import return_model_full_descriptor_copy, tab_subs_titles, pages_names
+import math
+
+from Configuration.Configuration import return_model_full_descriptor_copy, pages_names
+from Configuration.ParseConfigFile import ParseConfigFile
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
 from Extensions.Standard_extensions.Plan import Plan
@@ -57,6 +60,9 @@ class Page_display:
     def display_page(page):
         local_model_full_descriptor = return_model_full_descriptor_copy()
 
+        page_dict = ParseConfigFile.get_page_dictionary()
+        tab_dict = ParseConfigFile.get_tab_dictionary()
+
         page_tabs = list(local_model_full_descriptor[page].keys())
         page_tabs.insert(0, 'Intro')
         page_tabs.append('Dashboard')
@@ -77,6 +83,9 @@ class Page_display:
                 with col2:
                     st.warning('The company selected is: ' + st.session_state.company)
 
+                if isinstance(ParseConfigFile.get_tab_dictionary()[tab], float) == False:
+                    st.subheader(ParseConfigFile.get_tab_dictionary()[tab])
+
                 if Plan.return_activated_plan() or Ideas.return_activated_ideas():
                     st.write('---')
 
@@ -89,16 +98,21 @@ class Page_display:
 
                 i = 0
                 question_codes = list(local_model_full_descriptor[page][tab].keys())
-                for question_code, question_code_index in zip( question_codes, range(len(question_codes)) ):
 
-                    if question_code_index == 0:
+                tab_subsections = ParseConfigFile.get_subsections_by_tab(page_dict[page], tab_dict[tab])
 
-                        st.subheader(tab_subs_titles[i])
+                for question_code, question_code_index in zip(question_codes, range(len(question_codes))):
+
+                    if question_code_index == 0 and isinstance(tab_subsections[0], str)==True:
+
+                        st.subheader(tab_subsections[i])
                         i += 1
 
-                    if question_code_index != 0 and question_code[:2] != question_codes[question_code_index - 1][:2] and i <= (len(tab_subs_titles) - 1):
+                    if question_code_index != 0 \
+                            and question_code[:question_code.find('_') + 1] != question_codes[question_code_index - 1][:question_codes[question_code_index - 1].find('_') + 1] \
+                            and i <= (len(tab_subsections) - 1):
 
-                        st.subheader(tab_subs_titles[i])
+                        st.subheader(tab_subsections[i])
                         i += 1
 
                     Questions_settings.display_question(local_model_full_descriptor, page, tab, question_code)

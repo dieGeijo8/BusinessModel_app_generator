@@ -82,8 +82,9 @@ class Session_state_variables:
 
         Ideas.initialize_ideas(ovw)
 
-
+        print(ovw)
         st.session_state['overview'] = ovw
+
 
     # update the current values of the session state ovw dictionary
     @staticmethod

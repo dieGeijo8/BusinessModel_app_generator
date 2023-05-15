@@ -1,28 +1,31 @@
 import pandas as pd
+import math
 import streamlit as st
 from Configuration.Configuration import pages
+from Configuration.ParseConfigFile import ParseConfigFile
 from Extensions.Standard_extensions.Plan import Plan
 
 class Weights_per_tab:
 
     name = 'Weight'
-    #activate_tab_weights = False
+    tab_weights = ParseConfigFile.get_tab_weights()
 
     @staticmethod
     def set():
+        tab_weights = Weights_per_tab.tab_weights
+
+        if any(math.isnan(x) for x in tab_weights):
+
+            value = False
+        else:
+
+            value = True
+
         if 'default_activate_tab_weights' not in st.session_state:
-            st.session_state.default_activate_tab_weights = True
+            st.session_state.default_activate_tab_weights = value
 
         if 'activate_tab_weights' not in st.session_state:
             st.session_state.activate_tab_weights = st.session_state.default_activate_tab_weights
-
-    #this is just here to give a value to weights, in the real case they will be set from the configuration file
-    df = pd.read_excel('Configuration/15M.xlsx', sheet_name='Overview', skiprows=3, usecols='A:D,L')
-    df.columns = ['Tab', 'Code', 'Description', 'NCode', 'Weight']
-    df = df.astype({'Tab': str})
-    df = df.dropna(subset=['NCode'])
-
-    tab_weights_list = df['Weight'].to_list()
 
 
     #decorator to check if the variable activate weights is set to false or true
@@ -134,17 +137,25 @@ class Weights_per_tab:
 class Weights_per_page:
 
     name = 'Weights_per_page'
-    #activate_page_weights = True
+    pages_weights_list = ParseConfigFile.get_page_weights()
 
     @staticmethod
     def set():
+        page_weights = Weights_per_page.pages_weights_list
+
+        if any(math.isnan(x) for x in page_weights):
+
+            value = False
+        else:
+
+            value = True
+
         if 'default_activate_page_weights' not in st.session_state:
-            st.session_state.default_activate_page_weights = True
+            st.session_state.default_activate_page_weights = value
 
         if 'activate_page_weights' not in st.session_state:
             st.session_state.activate_page_weights = st.session_state.default_activate_page_weights
 
-    pages_weights_list = dict(zip(pages, [0.25, 0.25, 0.25, 0.10, 0.15]))
 
     @staticmethod
     def page_weights_decorator(func):
@@ -212,17 +223,29 @@ class Weights_per_page:
                     plan_per_page_list.append(scores_per_page_dict[page][Plan.name])
 
 
-        if st.session_state.activate_page_weights == True:
+        if st.session_state.activate_page_weights == True and st.session_state.activate_plan == True:
 
             current_score = round(sum(current_per_page_list) / sum(weights_per_page), 2)
             plan_score = round(sum(plan_per_page_list) / sum(weights_per_page), 2)
 
             return {'Current': current_score, 'Plan': plan_score}
 
-        else:
+        elif st.session_state.activate_page_weights == False and st.session_state.activate_plan == False:
 
             current_score = round(sum(current_per_page_list) / len(current_per_page_list), 2)
-            plan_score = round(sum(plan_per_page_list) / len(plan_per_page_list), 2)
+
+            return {'Current': current_score}
+
+        elif st.session_state.activate_page_weights == True and st.session_state.activate_plan == False:
+
+            current_score = round(sum(current_per_page_list) / sum(weights_per_page), 2)
+
+            return {'Current': current_score}
+
+        elif st.session_state.activate_page_weights == False and st.session_state.activate_plan == True:
+
+            current_score = round(sum(current_per_page_list) / sum(current_per_page_list), 2)
+            plan_score = round(sum(plan_per_page_list) / sum(plan_per_page_list), 2)
 
             return {'Current': current_score, 'Plan': plan_score}
 

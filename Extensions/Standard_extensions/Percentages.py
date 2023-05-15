@@ -118,9 +118,9 @@ class Percentages:
     @staticmethod
     def percentages_for_visualizations_thirdmethod():
         if st.session_state.activate_percentages == True:
-            return 1.5
+            return 2.5
         else:
-            return 0.1
+            return 0.5
 
     @percentages_decorator
     @staticmethod

@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import math
 from SessionState.Session_state_dataframes import Session_state_dataframes
 from SessionState.Session_state_variables import Session_state_variables
 from PagesDisplay.Visualizations import Visualizations
@@ -82,6 +83,9 @@ class Overview:
         Session_state_variables.update_company_overview_session_state()
         df_ovw = Session_state_dataframes.get_ovw_df_copy()
 
+        if all(x == '' for x in df_ovw['Description'].tolist()):
+            df_ovw = df_ovw.drop('Description', axis=1)
+
         #standard extension
         Percentages.ovw_as_percentage(df_ovw)
 
@@ -108,7 +112,7 @@ class Overview:
 
                     # if the tab is different from the tab of the previous row I am changing page so
                     # I print the correspondant df part and the next part header
-                elif df_ovw.loc[j, 'Tab'][:1] != df_ovw.loc[j - 1, 'Tab'][:1]:
+                elif df_ovw.loc[j, 'Tab number'][:1] != df_ovw.loc[j - 1, 'Tab number'][:1]:
 
                     st.dataframe(df_ovw.iloc[start:j])
 
