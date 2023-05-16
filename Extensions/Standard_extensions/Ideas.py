@@ -1,6 +1,6 @@
 import streamlit as st
 from rake_nltk import Rake
-from Configuration.Configuration import return_model_descriptor_copy, pages
+from Configuration_settings.Configuration import return_model_descriptor_copy, pages
 from DataManagement.DataManagement import DataManagement
 
 class Ideas:

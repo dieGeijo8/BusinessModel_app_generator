@@ -1,5 +1,5 @@
 import streamlit as st
-from Configuration.Configuration import return_model_descriptor_copy
+from Configuration_settings.Configuration import return_model_descriptor_copy
 from DataManagement.DataManagement import DataManagement
 from Questions_settings.Questions_settings import Questions_settings
 from Extensions.Standard_extensions.Checkbox import Checkbox

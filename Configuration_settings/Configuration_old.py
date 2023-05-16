@@ -1,16 +1,4 @@
 import streamlit as st
-from tries import *
-from Configuration.ParseConfigFile import ParseConfigFile
-
-excel_file_directory = 'Configuration/15M.xlsx' #this is now the 'configuration file'
-
-
-pages = ParseConfigFile.get_pages_list()#['1', '2', '3', '4', '5']
-pages_names = ParseConfigFile.get_pages_names_list()#['Procurement Framework Strategy', 'Category strategies', 'Supplier strategies',
-                                                    #'Process strategies', 'Procurement performance management']
-
-stages = ParseConfigFile.get_stages_list()#('1', '2', '3', '4', '5')
-max_stage = ParseConfigFile.get_max_stage()#max([int(x) for x in stages])
 
 #tab subsections titles - here it is manually, it should be via input
 tab_subs_titles = ['Integrated assessment', 'Concept excellence', 'Process Excellence', 'Implementation']
@@ -154,27 +142,3 @@ def excel_get_overview_description():
     df = df.reset_index(drop=True)
 
     return df
-
-
-
-#GLOBAL VARIABLES - define the model
-model_descriptor = ParseConfigFile.get_numeric_model_descriptor()#excel_get_model_description()
-model_full_descriptor = ParseConfigFile.get_numeric_model_full_descriptor()#excel_get_full_model_description()
-model_ovw_descriptor = ParseConfigFile.get_model_ovw_descriptor()#excel_get_overview_description()
-
-#methods to get copies of global variables
-@st.cache_data
-def return_model_descriptor_copy():
-    #for NEW model
-    #return excel_get_model_description_2()
-    return model_descriptor.copy()
-
-@st.cache_data
-def return_model_full_descriptor_copy():
-    #for NEW model
-    #return excel_get_full_model_description_2()
-    return model_full_descriptor.copy()
-
-@st.cache_data
-def return_model_ovw_descriptor_copy():
-    return model_ovw_descriptor.copy()

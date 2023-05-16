@@ -1,12 +1,11 @@
-import math
-
-from Configuration.Configuration import return_model_full_descriptor_copy, pages_names
-from Configuration.ParseConfigFile import ParseConfigFile
+import streamlit as st
+from Configuration_settings.Configuration import return_model_full_descriptor_copy, pages_names
+from Configuration_settings.ParseConfigFile import ParseConfigFile
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Ideas import Ideas
-import streamlit as st
+
 
 class Page_display:
 
@@ -83,7 +82,7 @@ class Page_display:
                 with col2:
                     st.warning('The company selected is: ' + st.session_state.company)
 
-                if isinstance(ParseConfigFile.get_tab_dictionary()[tab], float) == False:
+                if isinstance(ParseConfigFile.get_tab_dictionary()[tab], str) == True:
                     st.subheader(ParseConfigFile.get_tab_dictionary()[tab])
 
                 if Plan.return_activated_plan() or Ideas.return_activated_ideas():
@@ -103,7 +102,7 @@ class Page_display:
 
                 for question_code, question_code_index in zip(question_codes, range(len(question_codes))):
 
-                    if question_code_index == 0 and isinstance(tab_subsections[0], str)==True:
+                    if question_code_index == 0 and isinstance(tab_subsections[0], str) == True:
 
                         st.subheader(tab_subsections[i])
                         i += 1

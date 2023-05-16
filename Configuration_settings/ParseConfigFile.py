@@ -4,8 +4,14 @@ import pandas as pd
 
 class ParseConfigFile:
 
-    config_file_sheet1 = pd.read_excel('Configuration/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
-    config_file_sheet2 = pd.read_excel('Configuration/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelOverview')
+    config_file_sheet1 = pd.read_excel('Configuration_settings/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
+    config_file_sheet2 = pd.read_excel('Configuration_settings/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelOverview')
+
+    #clean data
+    score_columns = config_file_sheet1.columns[list(config_file_sheet1.columns).index('Question')+1:]
+
+    for col in score_columns:
+        config_file_sheet1[col] = config_file_sheet1[col].fillna(' ')
 
     # pages and pages names
     @staticmethod
@@ -287,9 +293,15 @@ class ParseConfigFile:
 
         df = ParseConfigFile.config_file_sheet2.copy()
 
-        tab_weigths_list = df['Page weight'].unique()
+        pages_names = df['Page'].unique()
 
-        return tab_weigths_list.tolist()
+        page_weights_list = []
+        for page in pages_names:
+
+            page_weights_list.append(df['Page weight'][df['Page'] == page].tolist()[0])
+
+        pages = ParseConfigFile.get_pages_list()
+        return dict(zip(pages, page_weights_list))
 
 
 

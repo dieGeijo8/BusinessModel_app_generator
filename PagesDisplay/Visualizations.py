@@ -2,8 +2,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import re
 from wordcloud import WordCloud, STOPWORDS
-from Configuration.Configuration import pages, pages_names, return_model_descriptor_copy
-from Configuration.ParseConfigFile import ParseConfigFile
+from Configuration_settings.Configuration import pages, pages_names, return_model_descriptor_copy
+from Configuration_settings.ParseConfigFile import ParseConfigFile
 from Questions_settings.Questions_settings import Questions_settings
 from SessionState.Session_state_dataframes import Session_state_dataframes
 from Extensions.Standard_extensions.Plan import Plan

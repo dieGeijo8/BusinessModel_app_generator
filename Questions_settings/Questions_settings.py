@@ -1,5 +1,5 @@
 import streamlit as st
-from Configuration.Configuration import stages
+from Configuration_settings.Configuration import stages
 from Extensions.Standard_extensions.Checkbox import Checkbox
 
 class Questions_settings:

@@ -1,6 +1,6 @@
 import google.cloud.firestore
 import streamlit as st
-from Configuration.Configuration import return_model_descriptor_copy
+from Configuration_settings.Configuration import return_model_descriptor_copy
 from Questions_settings.Questions_settings import Questions_settings
 
 class Firestore_API:
@@ -25,8 +25,8 @@ class Firestore_API:
 
             collections_names.append(collection.id)
 
-        if 'Configuration info' in collections_names:
-            collections_names.remove('Configuration info')
+        if 'Configuration_settings info' in collections_names:
+            collections_names.remove('Configuration_settings info')
 
         return collections_names
 
@@ -178,7 +178,7 @@ class Firestore_API:
     def Firestore_set_company_configuration(company, config_dict):
         #get the configuration collection
         db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
-        company_collection = db.collection('Configuration info')
+        company_collection = db.collection('Configuration_settings info')
 
         #get the company document
         company_config_doc = company_collection.document(company)
@@ -190,7 +190,7 @@ class Firestore_API:
     def Firestore_get_company_configuration():
         # get the configuration collection
         db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
-        company_collection = db.collection('Configuration info')
+        company_collection = db.collection('Configuration_settings info')
 
         # get the company document
         company_config_doc = company_collection.document(st.session_state.company)

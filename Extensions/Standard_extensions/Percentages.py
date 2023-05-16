@@ -1,5 +1,5 @@
 import streamlit as st
-from Configuration.Configuration import max_stage
+from Configuration_settings.Configuration import max_stage
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Weights import Weights_per_tab
 

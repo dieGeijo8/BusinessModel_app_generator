@@ -1,18 +1,18 @@
 import pandas as pd
 import math
 import streamlit as st
-from Configuration.Configuration import pages
-from Configuration.ParseConfigFile import ParseConfigFile
+from Configuration_settings.Configuration import pages
+from Configuration_settings.ParseConfigFile import ParseConfigFile
 from Extensions.Standard_extensions.Plan import Plan
 
 class Weights_per_tab:
 
     name = 'Weight'
-    tab_weights = ParseConfigFile.get_tab_weights()
+    tab_weights_list = ParseConfigFile.get_tab_weights()
 
     @staticmethod
     def set():
-        tab_weights = Weights_per_tab.tab_weights
+        tab_weights = Weights_per_tab.tab_weights_list
 
         if any(math.isnan(x) for x in tab_weights):
 
@@ -137,13 +137,13 @@ class Weights_per_tab:
 class Weights_per_page:
 
     name = 'Weights_per_page'
-    pages_weights_list = ParseConfigFile.get_page_weights()
+    pages_weights_dict = ParseConfigFile.get_page_weights()
 
     @staticmethod
     def set():
-        page_weights = Weights_per_page.pages_weights_list
+        page_weights = Weights_per_page.pages_weights_dict
 
-        if any(math.isnan(x) for x in page_weights):
+        if any(math.isnan(x) for x in page_weights.values()):
 
             value = False
         else:
@@ -185,7 +185,7 @@ class Weights_per_page:
     @page_weights_decorator
     @staticmethod
     def display_page_weights_second_method(scores_per_page_dict, page):
-        scores_per_page_dict[page]['Weight'] = Weights_per_page.pages_weights_list[page]
+        scores_per_page_dict[page]['Weight'] = Weights_per_page.pages_weights_dict[page]
 
 
     @page_weights_decorator
@@ -204,16 +204,18 @@ class Weights_per_page:
         plan_per_page_list = []
         weights_per_page = []
 
+        print(Weights_per_page.pages_weights_dict)
+
         for page in pages:
 
             if st.session_state.activate_page_weights == True:
 
-                current_per_page_list.append(scores_per_page_dict[page]['Current']*Weights_per_page.pages_weights_list[page])
+                current_per_page_list.append(scores_per_page_dict[page]['Current'] * Weights_per_page.pages_weights_dict[page])
 
                 if st.session_state.activate_plan == True:
-                   plan_per_page_list.append(scores_per_page_dict[page][Plan.name]*Weights_per_page.pages_weights_list[page])
+                   plan_per_page_list.append(scores_per_page_dict[page][Plan.name] * Weights_per_page.pages_weights_dict[page])
 
-                weights_per_page.append(Weights_per_page.pages_weights_list[page])
+                weights_per_page.append(Weights_per_page.pages_weights_dict[page])
 
             else:
 

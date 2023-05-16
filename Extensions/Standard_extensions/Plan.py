@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
 from DataManagement.DataManagement import DataManagement
-from Configuration.Configuration import return_model_descriptor_copy, max_stage
+from Configuration_settings.Configuration import return_model_descriptor_copy, max_stage
 
 class Plan:
 
