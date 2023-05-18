@@ -2,8 +2,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import re
 from wordcloud import WordCloud, STOPWORDS
-from Configuration_settings.Configuration import pages, pages_names, return_model_descriptor_copy
-from Configuration_settings.ParseConfigFile import ParseConfigFile
+from Configuration_file.Configuration import pages, pages_names, return_model_descriptor_copy
+from Configuration_file.ParseConfigFile import ParseConfigFile
 from Questions_settings.Questions_settings import Questions_settings
 from SessionState.Session_state_dataframes import Session_state_dataframes
 from Extensions.Standard_extensions.Plan import Plan
@@ -51,7 +51,7 @@ class Visualizations:
         grouped_df['Tab'] = grouped_df['Tab'].astype('category')
 
         tab_dictionary = ParseConfigFile.get_tab_dictionary()
-        grouped_df['Tab name'] = [tab_dictionary[x] for x in df['Tab'].tolist()]
+        grouped_df['Tab name'] = [tab_dictionary[x] for x in np.unique(df['Tab'].tolist())]
 
         #figure
         fig = px.bar(grouped_df, x='Tab', y='Stage', color='Tab',

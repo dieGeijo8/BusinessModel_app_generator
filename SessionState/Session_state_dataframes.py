@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 from Questions_settings.Questions_settings import Questions_settings
-from Configuration_settings.Configuration import return_model_descriptor_copy, return_model_ovw_descriptor_copy
+from Configuration_file.Configuration import return_model_descriptor_copy, return_model_ovw_descriptor_copy
 from Extensions.Standard_extensions.Checkbox import Checkbox
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Weights import Weights_per_tab

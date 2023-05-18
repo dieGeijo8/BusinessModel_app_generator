@@ -1,8 +1,8 @@
 import pandas as pd
 import math
 import streamlit as st
-from Configuration_settings.Configuration import pages
-from Configuration_settings.ParseConfigFile import ParseConfigFile
+from Configuration_file.Configuration import pages
+from Configuration_file.ParseConfigFile import ParseConfigFile
 from Extensions.Standard_extensions.Plan import Plan
 
 class Weights_per_tab:
@@ -53,6 +53,8 @@ class Weights_per_tab:
     @weights_decorator
     @staticmethod
     def add_weights_column(df_ovw):
+        print(df_ovw)
+        print(Weights_per_tab.tab_weights_list)
         df_ovw[Weights_per_tab.name] = Weights_per_tab.tab_weights_list
 
     @weights_decorator

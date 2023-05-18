@@ -1,6 +1,6 @@
 import google.cloud.firestore
 import streamlit as st
-from Configuration_settings.Configuration import return_model_descriptor_copy
+from Configuration_file.Configuration import return_model_descriptor_copy
 from Questions_settings.Questions_settings import Questions_settings
 
 class Firestore_API:

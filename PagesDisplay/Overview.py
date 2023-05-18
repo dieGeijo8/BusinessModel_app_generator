@@ -4,7 +4,7 @@ import math
 from SessionState.Session_state_dataframes import Session_state_dataframes
 from SessionState.Session_state_variables import Session_state_variables
 from PagesDisplay.Visualizations import Visualizations
-from Configuration_settings.Configuration import pages, pages_names
+from Configuration_file.Configuration import pages, pages_names
 from Extensions.Standard_extensions.Weights import Weights_per_tab, Weights_per_page
 from Extensions.Standard_extensions.Plan import Plan
 from Extensions.Standard_extensions.Percentages import Percentages

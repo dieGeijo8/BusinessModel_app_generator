@@ -4,8 +4,9 @@ import pandas as pd
 
 class ParseConfigFile:
 
-    config_file_sheet1 = pd.read_excel('Configuration_settings/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
-    config_file_sheet2 = pd.read_excel('Configuration_settings/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelOverview')
+    # Configuration_settings/RiskModel_ConfigurationFile.xlsx
+    config_file_sheet1 = pd.read_excel('Configuration_file/15M_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
+    config_file_sheet2 = pd.read_excel('Configuration_file/15M_ConfigurationFile.xlsx', sheet_name='ModelOverview')
 
     #clean data
     score_columns = config_file_sheet1.columns[list(config_file_sheet1.columns).index('Question')+1:]
@@ -156,7 +157,6 @@ class ParseConfigFile:
     @staticmethod
     def get_model_full_descriptor():
         pages = ParseConfigFile.get_pages_names_list()
-
         model_descriptor = {}
 
         for page in pages:
@@ -165,16 +165,14 @@ class ParseConfigFile:
 
             for tab in ParseConfigFile.get_tabs_by_page(page):
 
+                model_descriptor[page][tab] = {}
+
                 question_codes = ParseConfigFile.get_question_codes_by_tab(page, tab)
                 questions = ParseConfigFile.get_questions_by_tab(page, tab)
 
                 for question_code, question in zip(question_codes, questions):
 
-                    #print(question_code)
-
-                    model_descriptor[page][tab] = {}
-                    model_descriptor[page][tab][question_code] = {}
-                    model_descriptor[page][tab][question_code][question] = ParseConfigFile.get_stage_descriptions_by_question(page, tab, question)
+                    model_descriptor[page][tab][question_code] = {question: ParseConfigFile.get_stage_descriptions_by_question(page, tab, question)}
 
         return model_descriptor
 
@@ -268,12 +266,25 @@ class ParseConfigFile:
 
         df = ParseConfigFile.config_file_sheet2.copy()
 
-        df['Description'] = ['' if math.isnan(x) else x for x in df['Description'].tolist()]
+        df['Description'] = [' ' if math.isnan(x) else x for x in df['Description'].tolist()]
 
-        tabs_numbers = list(ParseConfigFile.get_tab_dictionary().keys())
+        tab_dictionary = ParseConfigFile.get_tab_dictionary()
+        reverse_tab_dictionary = dict(zip(tab_dictionary.values(), tab_dictionary.keys()))
+        tabs_numbers = [reverse_tab_dictionary[x] for x in df['Tab'].tolist()]
+        print(tabs_numbers)
 
-        ovw_df = pd.DataFrame.from_dict({'Tab number': tabs_numbers, 'Tab': df['Tab'].tolist(), 'Description': df['Description'].tolist()})
+        tabs_number_column = list(np.unique(tabs_numbers))
+        tabs_names_column = list(np.unique(df['Tab'].tolist()))
+        if all(x == ' ' for x in df['Description'].tolist()):
 
+            descriptions_column = df['Description'].tolist()[:len(tabs_names_column)]
+        else:
+
+            descriptions_column = list(np.unique(df['Description'].tolist()))
+
+
+        ovw_df = pd.DataFrame.from_dict({'Tab number': tabs_number_column, 'Tab': tabs_names_column, 'Description': descriptions_column})
+        print(ovw_df)
         return ovw_df
 
 

@@ -1,6 +1,6 @@
 import streamlit as st
-from Configuration_settings.Configuration import return_model_full_descriptor_copy, pages_names
-from Configuration_settings.ParseConfigFile import ParseConfigFile
+from Configuration_file.Configuration import return_model_full_descriptor_copy, pages_names
+from Configuration_file.ParseConfigFile import ParseConfigFile
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
 from Extensions.Standard_extensions.Plan import Plan

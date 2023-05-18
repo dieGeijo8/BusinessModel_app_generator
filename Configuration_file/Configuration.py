@@ -1,5 +1,5 @@
 import streamlit as st
-from Configuration_settings.ParseConfigFile import ParseConfigFile
+from Configuration_file.ParseConfigFile import ParseConfigFile
 
 
 pages = ParseConfigFile.get_pages_list()
