@@ -53,8 +53,7 @@ class Weights_per_tab:
     @weights_decorator
     @staticmethod
     def add_weights_column(df_ovw):
-        print(df_ovw)
-        print(Weights_per_tab.tab_weights_list)
+
         df_ovw[Weights_per_tab.name] = Weights_per_tab.tab_weights_list
 
     @weights_decorator
@@ -205,8 +204,6 @@ class Weights_per_page:
         current_per_page_list = []
         plan_per_page_list = []
         weights_per_page = []
-
-        print(Weights_per_page.pages_weights_dict)
 
         for page in pages:
 

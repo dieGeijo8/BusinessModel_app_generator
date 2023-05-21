@@ -52,10 +52,8 @@ class Session_state_dataframes:
     def get_ovw_df_copy():
         # get the ovw part that doesn't change - tab + description
         df_ovw = return_model_ovw_descriptor_copy()
-
         # standard extensions
         Weights_per_tab.add_weights_column(df_ovw)
-
         df_ovw['Current'] = [st.session_state['overview']['Current'][tab] for tab in
                              st.session_state['overview']['Current'].keys()]
 

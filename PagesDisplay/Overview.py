@@ -83,16 +83,11 @@ class Overview:
         Session_state_variables.update_company_overview_session_state()
         df_ovw = Session_state_dataframes.get_ovw_df_copy()
 
-        # df_ovw['Tab number'] = [int(x[2:]) for x in df_ovw['Tab number'].tolist()]
-        # df_ovw = df_ovw.sort_values(by=['Tab number'])
-        # df_ovw['Tab number'] = df_ovw['Tab number'].astype('category')
-
         if all(x == '' for x in df_ovw['Description'].tolist()):
             df_ovw = df_ovw.drop('Description', axis=1)
 
         #standard extension
         Percentages.ovw_as_percentage(df_ovw)
-
 
         tabs = st.tabs(['Data', 'Dashboard'])
 

@@ -269,12 +269,15 @@ class ParseConfigFile:
         df['Description'] = [' ' if math.isnan(x) else x for x in df['Description'].tolist()]
 
         tab_dictionary = ParseConfigFile.get_tab_dictionary()
-        reverse_tab_dictionary = dict(zip(tab_dictionary.values(), tab_dictionary.keys()))
-        tabs_numbers = [reverse_tab_dictionary[x] for x in df['Tab'].tolist()]
-        print(tabs_numbers)
+        reversed_tab_dict = {name:number for number, name in tab_dictionary.items()}
 
-        tabs_number_column = list(np.unique(tabs_numbers))
-        tabs_names_column = list(np.unique(df['Tab'].tolist()))
+        tabs_number_column = []
+        tabs_names_column = []
+        for name in reversed_tab_dict.keys():
+
+            tabs_names_column.append(name)
+            tabs_number_column.append((reversed_tab_dict[name]))
+
         if all(x == ' ' for x in df['Description'].tolist()):
 
             descriptions_column = df['Description'].tolist()[:len(tabs_names_column)]
@@ -284,7 +287,6 @@ class ParseConfigFile:
 
 
         ovw_df = pd.DataFrame.from_dict({'Tab number': tabs_number_column, 'Tab': tabs_names_column, 'Description': descriptions_column})
-        print(ovw_df)
         return ovw_df
 
 
@@ -317,6 +319,4 @@ class ParseConfigFile:
 
 
 
-if __name__ == "__main__":
-
-    print(ParseConfigFile.get_numeric_model_full_descriptor())
+# if __name__ == "__main__":
