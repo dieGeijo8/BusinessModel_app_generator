@@ -69,11 +69,36 @@ def company_registration_form():
 
                 st.warning('Invalid company')
 
+
+def set_company(company):
+    st.session_state.company = company
+
+    if 'company_locked' not in st.session_state:
+
+        st.session_state.company_locked = 1
+        ThreadSafety.lock_company()
+
+    StandardExtensions_configuration.set_extensions()
+
+    # get company configuration
+    StandardExtensions_configuration.get_extension_config()
+
+    # initialize session state
+    Session_state_variables.initialize_company_session_state()
+    Session_state_variables.initialize_company_overview_session_state()
+
+
+
 def callback_logout():
+
+    if st.session_state.company != '':
+
+        ThreadSafety.unlock_company()
 
     st.cache_data.clear()
     st.cache_resource.clear()
     st.session_state.clear()
+
 
 
 if __name__ == "__main__":
@@ -91,14 +116,24 @@ if __name__ == "__main__":
 
         st.write('Welcome to the home page')
 
-        st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
-                     index=st.session_state.first_selectbox_value,
-                     on_change=callback_selectbox, key='selectbox_value')
+        user_rights = Users.get_user_rights(username)
 
-        with st.expander('Do you want to register a new company?'):
 
-                company_registration_form()
+        if user_rights == 'admin':
 
+            st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
+                         index=st.session_state.first_selectbox_value,
+                         on_change=callback_selectbox, key='selectbox_value')
+
+            with st.expander('Do you want to register a new company?'):
+
+                    company_registration_form()
+
+        elif user_rights == 'normal':
+
+            user_company = Users.get_user_company(username)
+
+            set_company(user_company)
 
 
         st.button('Submit data', on_click=DataManagement.submit_button, disabled=st.session_state.dont_display_data)

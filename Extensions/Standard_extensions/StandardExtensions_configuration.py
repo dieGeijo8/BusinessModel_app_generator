@@ -9,6 +9,17 @@ from Extensions.Standard_extensions.Weights import Weights_per_tab, Weights_per_
 class StandardExtensions_configuration:
 
     @staticmethod
+    def set_extensions():
+
+        Plan.set()
+        Percentages.set()
+        Checkbox.set()
+        Ideas.set()
+
+        Weights_per_page.set()
+        Weights_per_tab.set()
+
+    @staticmethod
     def extension_form():
 
         Plan.set()
