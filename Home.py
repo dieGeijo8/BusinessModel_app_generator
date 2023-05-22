@@ -95,9 +95,11 @@ def callback_logout():
 
         ThreadSafety.unlock_company()
 
+    st.session_state.clear()
+
     st.cache_data.clear()
     st.cache_resource.clear()
-    st.session_state.clear()
+
 
 
 

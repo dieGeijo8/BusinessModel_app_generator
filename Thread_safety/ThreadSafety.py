@@ -15,6 +15,31 @@ class ThreadSafety:
 
             locks_companies[company_name] = 0
 
+
+    @staticmethod
+    def force_lock_company():
+
+        locks_companies[st.session_state.company] = 0
+
+        if st.session_state.company != '':
+
+            lock.acquire()
+
+            if locks_companies[st.session_state.company] == 1: # company taken
+
+                st.session_state.dont_display_data = True
+                st.session_state.right_to_unlock = 0
+
+            else: # company free
+
+                st.session_state.dont_display_data = False
+                st.session_state.right_to_unlock = 1
+
+                locks_companies[st.session_state.company] = 1
+
+            lock.release()
+
+
     @staticmethod
     def lock_company():
 
@@ -52,6 +77,9 @@ class ThreadSafety:
         if 'dont_display_data' in st.session_state:
             if st.session_state.dont_display_data == True:
 
-                st.warning('The company you selected is being used by another user at the moment. For safety reasons you can see the data but you can not modify it. Try to reselect the company in a bit.')
+                st.warning('The company you selected is being used by another user at the moment or has not been closed correctly. For safety reasons you can see the data but you can not modify it.'
+                           ' If you are sure that you are working in a safe environment and you want to modify the data anyways click on continue.')
+
+                st.button('Continue anyways', on_click=ThreadSafety.force_lock_company())
 
 
