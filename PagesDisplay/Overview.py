@@ -79,91 +79,97 @@ class Overview:
     @staticmethod
     def display_overview():
 
-        #get an updated copy of the ovw df
-        Session_state_variables.update_company_overview_session_state()
-        df_ovw = Session_state_dataframes.get_ovw_df_copy()
+        if st.session_state.authentication_status == True:
 
-        if all(x == '' for x in df_ovw['Description'].tolist()):
-            df_ovw = df_ovw.drop('Description', axis=1)
+            #get an updated copy of the ovw df
+            Session_state_variables.update_company_overview_session_state()
+            df_ovw = Session_state_dataframes.get_ovw_df_copy()
 
-        #standard extension
-        Percentages.ovw_as_percentage(df_ovw)
+            if all(x == '' for x in df_ovw['Description'].tolist()):
+                df_ovw = df_ovw.drop('Description', axis=1)
 
-        tabs = st.tabs(['Data', 'Dashboard'])
+            #standard extension
+            Percentages.ovw_as_percentage(df_ovw)
 
-        with tabs[0]:
-            st.header(st.session_state.company + ' overview')
+            tabs = st.tabs(['Data', 'Dashboard'])
 
-            Overview.display_overall_total()
+            with tabs[0]:
+                st.header(st.session_state.company + ' overview')
 
-            start = 0
-            pages_titles_index = 0
+                Overview.display_overall_total()
 
-            for j in range(len(df_ovw)):
+                start = 0
+                pages_titles_index = 0
 
-                if j == 0:
-                    # first iteration - always print a header
-                    st.subheader(str(pages_titles_index + 1) + ' - ' + pages_names[pages_titles_index])
+                for j in range(len(df_ovw)):
 
-                    Overview.display_overall_page(pages[pages_titles_index])
-
-                    pages_titles_index += 1
-
-                    # if the tab is different from the tab of the previous row I am changing page so
-                    # I print the correspondant df part and the next part header
-                elif df_ovw.loc[j, 'Tab number'][:1] != df_ovw.loc[j - 1, 'Tab number'][:1]:
-
-                    st.dataframe(df_ovw.iloc[start:j])
-
-                    start = j
-
-                    if pages_titles_index <= (len(pages) - 1):
-
+                    if j == 0:
+                        # first iteration - always print a header
                         st.subheader(str(pages_titles_index + 1) + ' - ' + pages_names[pages_titles_index])
 
                         Overview.display_overall_page(pages[pages_titles_index])
 
                         pages_titles_index += 1
 
-                    # last df part
-                elif j == len(df_ovw)-1:
+                        # if the tab is different from the tab of the previous row I am changing page so
+                        # I print the correspondant df part and the next part header
+                    elif df_ovw.loc[j, 'Tab number'][:1] != df_ovw.loc[j - 1, 'Tab number'][:1]:
 
-                    st.dataframe(df_ovw.iloc[start:j+1])
+                        st.dataframe(df_ovw.iloc[start:j])
 
-        with tabs[1]:
+                        start = j
 
-            st.header(st.session_state.company + ' overview')
+                        if pages_titles_index <= (len(pages) - 1):
+
+                            st.subheader(str(pages_titles_index + 1) + ' - ' + pages_names[pages_titles_index])
+
+                            Overview.display_overall_page(pages[pages_titles_index])
+
+                            pages_titles_index += 1
+
+                        # last df part
+                    elif j == len(df_ovw)-1:
+
+                        st.dataframe(df_ovw.iloc[start:j+1])
+
+            with tabs[1]:
+
+                st.header(st.session_state.company + ' overview')
 
 
-            st.subheader('Average score by page')
+                st.subheader('Average score by page')
 
-            bp = Visualizations.overview_barplot()
+                bp = Visualizations.overview_barplot()
 
-            st.plotly_chart(bp, theme="streamlit", use_container_width=True)
-            with st.expander('Barplot description'):
-                st.write('The above graph shows the average current and plan(if selected) score per each page of the model. The horizontal lines displayed indicate the average current and plan values across all the pages.')
+                st.plotly_chart(bp, theme="streamlit", use_container_width=True)
+                with st.expander('Barplot description'):
+                    st.write('The above graph shows the average current and plan(if selected) score per each page of the model. The horizontal lines displayed indicate the average current and plan values across all the pages.')
 
 
-            st.write('')
-            st.write('')
-
-            st.subheader('Average score by tab')
-
-            col1, col2 = st.columns([1, 4])
-
-            with col1:
-                page_selected = st.selectbox(label='Choose a page.', options=pages)
-            with col2:
+                st.write('')
                 st.write('')
 
-            rc = Visualizations.overview_radarchart(page_selected)
+                st.subheader('Average score by tab')
 
-            st.plotly_chart(rc, theme="streamlit", use_container_width=True)
+                col1, col2 = st.columns([1, 4])
 
-            with st.expander('Radar chart description'):
-                st.write('The above graph shows the average current and plan(if selected) score per each tab of the model. By selecting the page through the scrollable menu on the left you can explore all the tabs of the model by page.')
+                with col1:
+                    page_selected = st.selectbox(label='Choose a page.', options=pages)
+                with col2:
+                    st.write('')
 
-            st.write('')
-            st.write('')
+                rc = Visualizations.overview_radarchart(page_selected)
 
-            Ideas.ideas_keywords_by_page_visualization()
+                st.plotly_chart(rc, theme="streamlit", use_container_width=True)
+
+                with st.expander('Radar chart description'):
+                    st.write('The above graph shows the average current and plan(if selected) score per each tab of the model. By selecting the page through the scrollable menu on the left you can explore all the tabs of the model by page.')
+
+                st.write('')
+                st.write('')
+
+                Ideas.ideas_keywords_by_page_visualization()
+
+        else:
+
+            st.warning('You have to authenticate.')

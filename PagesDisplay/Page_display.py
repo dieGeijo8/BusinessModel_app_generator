@@ -57,68 +57,74 @@ class Page_display:
     #method to display a page - the way the tab subsection titles are printed should change when switching to configuration file
     @staticmethod
     def display_page(page):
-        local_model_full_descriptor = return_model_full_descriptor_copy()
+        if st.session_state.authentication_status == True:
 
-        page_dict = ParseConfigFile.get_page_dictionary()
-        tab_dict = ParseConfigFile.get_tab_dictionary()
+            local_model_full_descriptor = return_model_full_descriptor_copy()
 
-        page_tabs = list(local_model_full_descriptor[page].keys())
-        page_tabs.insert(0, 'Intro')
-        page_tabs.append('Dashboard')
+            page_dict = ParseConfigFile.get_page_dictionary()
+            tab_dict = ParseConfigFile.get_tab_dictionary()
 
-        tabs = st.tabs(page_tabs)
+            page_tabs = list(local_model_full_descriptor[page].keys())
+            page_tabs.insert(0, 'Intro')
+            page_tabs.append('Dashboard')
 
-        with tabs[0]:
-            st.header(pages_names[int(page) - 1])
+            tabs = st.tabs(page_tabs)
 
-            st.write('some text')
+            with tabs[0]:
+                st.header(pages_names[int(page) - 1])
 
-        for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[1:-1]):
-            with tab_widget:
+                st.write('some text')
 
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.write('')
-                with col2:
-                    st.warning('The company selected is: ' + st.session_state.company)
+            for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[1:-1]):
+                with tab_widget:
 
-                if isinstance(ParseConfigFile.get_tab_dictionary()[tab], str) == True:
-                    st.subheader(ParseConfigFile.get_tab_dictionary()[tab])
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.write('')
+                    with col2:
+                        st.warning('The company selected is: ' + st.session_state.company)
 
-                if Plan.return_activated_plan() or Ideas.return_activated_ideas():
-                    st.write('---')
+                    if isinstance(ParseConfigFile.get_tab_dictionary()[tab], str) == True:
+                        st.subheader(ParseConfigFile.get_tab_dictionary()[tab])
 
-                Plan.print_slider(tab)
+                    if Plan.return_activated_plan() or Ideas.return_activated_ideas():
+                        st.write('---')
 
-                Ideas.print_textarea(tab)
+                    Plan.print_slider(tab)
 
-                if Plan.return_activated_plan() or Ideas.return_activated_ideas():
-                    st.write('---')
+                    Ideas.print_textarea(tab)
 
-                i = 0
-                question_codes = list(local_model_full_descriptor[page][tab].keys())
+                    if Plan.return_activated_plan() or Ideas.return_activated_ideas():
+                        st.write('---')
 
-                tab_subsections = ParseConfigFile.get_subsections_by_tab(page_dict[page], tab_dict[tab])
+                    i = 0
+                    question_codes = list(local_model_full_descriptor[page][tab].keys())
 
-                for question_code, question_code_index in zip(question_codes, range(len(question_codes))):
+                    tab_subsections = ParseConfigFile.get_subsections_by_tab(page_dict[page], tab_dict[tab])
 
-                    if question_code_index == 0 and isinstance(tab_subsections[0], str) == True:
+                    for question_code, question_code_index in zip(question_codes, range(len(question_codes))):
 
-                        st.subheader(tab_subsections[i])
-                        i += 1
+                        if question_code_index == 0 and isinstance(tab_subsections[0], str) == True:
 
-                    if question_code_index != 0 \
-                            and question_code[:question_code.find('_') + 1] != question_codes[question_code_index - 1][:question_codes[question_code_index - 1].find('_') + 1] \
-                            and i <= (len(tab_subsections) - 1):
+                            st.subheader(tab_subsections[i])
+                            i += 1
 
-                        st.subheader(tab_subsections[i])
-                        i += 1
+                        if question_code_index != 0 \
+                                and question_code[:question_code.find('_') + 1] != question_codes[question_code_index - 1][:question_codes[question_code_index - 1].find('_') + 1] \
+                                and i <= (len(tab_subsections) - 1):
 
-                    Questions_settings.display_question(local_model_full_descriptor, page, tab, question_code)
-                    st.write(' ')
-                    st.write(' ')
+                            st.subheader(tab_subsections[i])
+                            i += 1
 
-        with tabs[-1]:
+                        Questions_settings.display_question(local_model_full_descriptor, page, tab, question_code)
+                        st.write(' ')
+                        st.write(' ')
 
-            Page_display.__dashboard_display(page)
+            with tabs[-1]:
+
+                Page_display.__dashboard_display(page)
+
+        else:
+
+            st.warning('You have to authenticate.')
 

@@ -1,11 +1,11 @@
 import time
-
 import streamlit as st
 from SessionState.Session_state_variables import Session_state_variables
 from DataManagement.DataManagement import DataManagement
 from Thread_safety.ThreadSafety import ThreadSafety
 from Extensions.Standard_extensions.StandardExtensions_configuration import StandardExtensions_configuration
 from Checks.Checks import Checks
+from UsersManagement.Users import Users
 
 #add the written company to the company list to make it selectable from the select box
 # def callback_textinput():
@@ -69,29 +69,49 @@ def company_registration_form():
 
                 st.warning('Invalid company')
 
+def callback_logout():
+
+    st.cache_data.clear()
+    st.cache_resource.clear()
+    st.session_state.clear()
 
 
 if __name__ == "__main__":
 
-    st.write('Welcome to the home page')
-
     if 'webapp_initialized' not in st.session_state:
-
         st.session_state.webapp_initialized = 1
         Session_state_variables.initialize_webapp_sessionstate()
 
+    aut = Users.user_authentication()
+    authenticator, authentication_status, name, username = aut[0], aut[1], aut[2], aut[3]
 
-    st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
-                 index=st.session_state.first_selectbox_value,
-                 on_change=callback_selectbox, key='selectbox_value')
+    st.session_state.authentication_status = authentication_status
 
-    with st.expander('Do you want to register a new company?'):
+    if authentication_status == True:
 
-            company_registration_form()
+        st.write('Welcome to the home page')
+
+        st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
+                     index=st.session_state.first_selectbox_value,
+                     on_change=callback_selectbox, key='selectbox_value')
+
+        with st.expander('Do you want to register a new company?'):
+
+                company_registration_form()
 
 
 
-    st.button('Submit data', on_click=DataManagement.submit_button, disabled=st.session_state.dont_display_data)
+        st.button('Submit data', on_click=DataManagement.submit_button, disabled=st.session_state.dont_display_data)
 
-    ThreadSafety.lock_warning_display()
+        ThreadSafety.lock_warning_display()
+
+        st.button(label='Logout', on_click=callback_logout)
+
+    elif authentication_status == None:
+
+        st.warning('Please enter your username and password.')
+
+    elif authentication_status == False:
+
+        st.error('Username or password is incorrect.')
 
