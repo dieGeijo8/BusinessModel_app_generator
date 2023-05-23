@@ -1,5 +1,6 @@
 import google.cloud.firestore
 import streamlit as st
+from datetime import datetime
 from Configuration_file.Configuration import return_model_descriptor_copy
 from Questions_settings.Questions_settings import Questions_settings
 
@@ -7,12 +8,49 @@ class Firestore_API:
 
     key_file_dir = "DataManagement/Firestore/firestore_key.json"
 
-    # support method - object to connect with a collection of the db
     @staticmethod
-    def Firestore_get_company_collection():
+    def Firestore_get_history_for_company():
+
         db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
 
-        company_collection = db.collection(st.session_state.company)
+        history = db.collection(st.session_state.company).stream()
+
+        company_history = ['', 'New compilation']
+
+        for version in history:
+
+            company_history.append(version.id)
+
+        return company_history
+
+    @staticmethod
+    def __Firestore_get_company_with_time_collection():
+        db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
+
+        company_collection = []
+
+        if st.session_state.company != '':
+
+            if st.session_state.history != '':
+
+                if st.session_state.history == 'New compilation':
+
+                    current_date = datetime.now()
+                    formatted_date = current_date.strftime("%Y-%m-%d %H:%M:%S")
+
+                    company_collection = db.collection(st.session_state.company).document(formatted_date).collection(st.session_state.company)
+
+                else:
+
+                    company_collection = db.collection(st.session_state.company).document(st.session_state.history).collection(st.session_state.company)
+
+        return company_collection
+
+    #support method - object to connect with a collection of the db
+    @staticmethod
+    def Firestore_get_company_collection():
+
+        company_collection = Firestore_API.__Firestore_get_company_with_time_collection()
         return company_collection
 
     #support method - used in the web app initialization to obtain the starting set of available companies

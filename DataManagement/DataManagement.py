@@ -9,6 +9,12 @@ class DataManagement:
 
         return company_collection
 
+    @staticmethod
+    def get_history_for_company():
+        company_history = Firestore_API.Firestore_get_history_for_company()
+
+        return company_history
+
     #support method - used in the web app initialization to obtain the starting set of available companies
     @staticmethod
     def get_company_list():

@@ -20,6 +20,8 @@ from UsersManagement.Users import Users
 #change session state company - delete if needed and initialize
 def callback_selectbox():
 
+    st.session_state.history = ''
+
     if st.session_state.company != '':
         Session_state_variables.delete_company_session_state()
         Session_state_variables.delete_company_overview_session_state()
@@ -36,9 +38,18 @@ def callback_selectbox():
         #get company configuration
         StandardExtensions_configuration.get_extension_config()
 
-        #intialize session state
-        Session_state_variables.initialize_company_session_state()
-        Session_state_variables.initialize_company_overview_session_state()
+    if st.session_state.company != '':
+
+        st.session_state.company_history = DataManagement.get_history_for_company()
+
+
+def callback_selectbox_history():
+
+    st.session_state.history = st.session_state.history_select_box_value
+
+    #intialize session state
+    Session_state_variables.initialize_company_session_state()
+    Session_state_variables.initialize_company_overview_session_state()
 
 
 def company_registration_form():
@@ -95,7 +106,10 @@ def callback_logout():
 
         ThreadSafety.unlock_company()
 
-    st.session_state.clear()
+    #st.session_state.clear()
+    st.session_state.company = ''
+    st.session_state.authentication_status  = None
+
 
     st.cache_data.clear()
     st.cache_resource.clear()
@@ -123,9 +137,19 @@ if __name__ == "__main__":
 
         if user_rights == 'admin':
 
-            st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
-                         index=st.session_state.first_selectbox_value,
-                         on_change=callback_selectbox, key='selectbox_value')
+            col1, col2 = st.columns([3, 1])
+
+            with col1:
+
+                st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
+                             index=st.session_state.first_selectbox_value,
+                             on_change=callback_selectbox, key='selectbox_value')
+
+            with col2:
+
+                st.selectbox('Do you want to explore an old version?', options=st.session_state.company_history,
+                             index=st.session_state.company_history.index(st.session_state.history),
+                             on_change=callback_selectbox_history, key='history_select_box_value')
 
             with st.expander('Do you want to register a new company?'):
 

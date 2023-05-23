@@ -15,6 +15,9 @@ class Session_state_variables:
         if 'company' not in st.session_state:
             st.session_state.company = ''
 
+        if 'history' not in st.session_state:
+            st.session_state.history = ''
+
         if 'first_selectbox_value' not in st.session_state:
             st.session_state['first_selectbox_value'] = 0
 
@@ -23,6 +26,9 @@ class Session_state_variables:
 
         if 'company_list' not in st.session_state:
             st.session_state['company_list'] = DataManagement.get_company_list()
+
+        if 'company_history' not in st.session_state:
+            st.session_state['company_history'] = ['']
 
         if 'dont_display_data' not in st.session_state:
             st.session_state['dont_display_data'] = False
