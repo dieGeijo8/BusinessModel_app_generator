@@ -20,36 +20,59 @@ from UsersManagement.Users import Users
 #change session state company - delete if needed and initialize
 def callback_selectbox():
 
-    st.session_state.history = ''
-
-    if st.session_state.company != '':
-        Session_state_variables.delete_company_session_state()
-        Session_state_variables.delete_company_overview_session_state()
+    # if the previous selected company was null there's nothing to delete or unlock
+    if st.session_state.company != '' and st.session_state.history != '':
 
         ThreadSafety.unlock_company()
 
-    if st.session_state.selectbox_value != ' ':
+    # set the new company whatever is null or not
+    st.session_state.company = st.session_state.selectbox_value
+    st.session_state.first_selectbox_value = st.session_state.company_list.index(st.session_state.company)
 
-        st.session_state.company = st.session_state.selectbox_value
-        st.session_state.first_selectbox_value = st.session_state.company_list.index(st.session_state.company)
+    # if the new company selected is null there's nothing to lock or get configuration for
+    if st.session_state.company != '':
 
         ThreadSafety.lock_company()
 
         #get company configuration
         StandardExtensions_configuration.get_extension_config()
 
+    # if the new company is not null get the versions avalaibles and set the version to not selected
     if st.session_state.company != '':
 
         st.session_state.company_history = DataManagement.get_history_for_company()
+        st.session_state.history = ''
+
+    # otherwise not display any selection option
+    else:
+
+        st.session_state.company_history = ['']
+        st.session_state.history = ''
+
 
 
 def callback_selectbox_history():
 
+    # there was a previous selection
+    if st.session_state.company != '' and st.session_state.history != '':
+
+        Session_state_variables.delete_company_session_state()
+        Session_state_variables.delete_company_overview_session_state()
+
     st.session_state.history = st.session_state.history_select_box_value
 
-    #intialize session state
-    Session_state_variables.initialize_company_session_state()
-    Session_state_variables.initialize_company_overview_session_state()
+    # if there's a company selected do this
+    if st.session_state.company != '' and st.session_state.history != '':
+
+        #intialize session state
+        Session_state_variables.initialize_company_session_state()
+        Session_state_variables.initialize_company_overview_session_state()
+
+    if st.session_state.history == 'New compilation':
+
+        st.session_state.selected_mode = 1
+
+    # otherwise do nothing
 
 
 def company_registration_form():
@@ -82,7 +105,10 @@ def company_registration_form():
 
 
 def set_company(company):
+
     st.session_state.company = company
+
+    st.session_state.company_history = DataManagement.get_history_for_company()
 
     if 'company_locked' not in st.session_state:
 
@@ -94,9 +120,11 @@ def set_company(company):
     # get company configuration
     StandardExtensions_configuration.get_extension_config()
 
-    # initialize session state
-    Session_state_variables.initialize_company_session_state()
-    Session_state_variables.initialize_company_overview_session_state()
+    # if st.session_state.history != '':
+    #
+    #     # initialize session state
+    #     Session_state_variables.initialize_company_session_state()
+    #     Session_state_variables.initialize_company_overview_session_state()
 
 
 
@@ -113,6 +141,19 @@ def callback_logout():
 
     st.cache_data.clear()
     st.cache_resource.clear()
+
+
+def callback_mode():
+
+    if st.session_state.history == 'New compilation':
+
+        st.session_state.selected_mode = 1
+
+    else:
+
+        options = ['Overwrite', 'Save as new']
+
+        st.session_state.selected_mode = options.index(st.session_state.mode_selectbox)
 
 
 
@@ -137,7 +178,7 @@ if __name__ == "__main__":
 
         if user_rights == 'admin':
 
-            col1, col2 = st.columns([3, 1])
+            col1, col2, col3 = st.columns(3)
 
             with col1:
 
@@ -151,6 +192,12 @@ if __name__ == "__main__":
                              index=st.session_state.company_history.index(st.session_state.history),
                              on_change=callback_selectbox_history, key='history_select_box_value')
 
+            with col3:
+
+                st.selectbox('Overwrite or save as new version?', options=['Overwrite', 'Save as new'],
+                             index=st.session_state.selected_mode,
+                             on_change=callback_mode, key='mode_selectbox')
+
             with st.expander('Do you want to register a new company?'):
 
                     company_registration_form()
@@ -160,6 +207,21 @@ if __name__ == "__main__":
             user_company = Users.get_user_company(username)
 
             set_company(user_company)
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                st.selectbox('Do you want to explore an old version?', options=st.session_state.company_history,
+                             index=st.session_state.company_history.index(st.session_state.history),
+                             on_change=callback_selectbox_history, key='history_select_box_value')
+
+            with col2:
+
+                st.selectbox('Overwrite or save as new version?', options=['Overwrite', 'Save as new'],
+                             index=st.session_state.selected_mode,
+                             on_change=callback_mode, key='mode_selectbox')
+
 
 
         st.button('Submit data', on_click=DataManagement.submit_button, disabled=st.session_state.dont_display_data)

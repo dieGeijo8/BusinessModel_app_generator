@@ -18,6 +18,9 @@ class Session_state_variables:
         if 'history' not in st.session_state:
             st.session_state.history = ''
 
+        if 'selected_mode' not in st.session_state:
+            st.session_state.selected_mode = 0
+
         if 'first_selectbox_value' not in st.session_state:
             st.session_state['first_selectbox_value'] = 0
 

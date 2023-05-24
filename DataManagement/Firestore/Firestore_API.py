@@ -13,11 +13,12 @@ class Firestore_API:
 
         db = google.cloud.firestore.Client.from_service_account_json(Firestore_API.key_file_dir)
 
-        history = db.collection(st.session_state.company).stream()
+        company = db.collection(st.session_state.company)
+        versions = company.get()
 
         company_history = ['', 'New compilation']
 
-        for version in history:
+        for version in versions:
 
             company_history.append(version.id)
 
@@ -36,9 +37,13 @@ class Firestore_API:
                 if st.session_state.history == 'New compilation':
 
                     current_date = datetime.now()
-                    formatted_date = current_date.strftime("%Y-%m-%d %H:%M:%S")
+                    formatted_date = current_date.strftime("%Y-%m-%d %H:%M")
 
-                    company_collection = db.collection(st.session_state.company).document(formatted_date).collection(st.session_state.company)
+                    doc_ref = db.collection(st.session_state.company).document(formatted_date)
+                    doc_ref.set({'data': 'data'}) # this is just to be sure that the document is created
+
+                    company_collection = doc_ref.collection(st.session_state.company)
+                    #company_collection = db.collection(st.session_state.company).document(formatted_date).collection(st.session_state.company)
 
                 else:
 
@@ -206,9 +211,18 @@ class Firestore_API:
     #function for submit button
     @staticmethod
     def Firestore_submit_button():
+
+        previous_history = st.session_state.history
+
+        if st.session_state.selected_mode == 1:
+
+            st.session_state.history = 'New compilation'
+
         Firestore_API.Firestore_submit_company_data()
 
         Firestore_API.Firestore_submit_company_overview()
+
+        st.session_state.history = previous_history
 
 
     #function for configuration info
