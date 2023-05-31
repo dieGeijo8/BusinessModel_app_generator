@@ -72,6 +72,10 @@ class Page_display:
 
                 tabs = st.tabs(page_tabs)
 
+                with st.sidebar:
+                    st.write('Company: ***' + st.session_state.company + '***')
+                    st.write('Version: ***' + st.session_state.history + '***')
+
                 with tabs[0]:
                     st.header(pages_names[int(page) - 1])
 
@@ -79,12 +83,6 @@ class Page_display:
 
                 for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[1:-1]):
                     with tab_widget:
-
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            st.write('')
-                        with col2:
-                            st.warning('The company selected is: ' + st.session_state.company)
 
                         if isinstance(ParseConfigFile.get_tab_dictionary()[tab], str) == True:
                             st.subheader(ParseConfigFile.get_tab_dictionary()[tab])

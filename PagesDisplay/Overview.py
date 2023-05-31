@@ -87,13 +87,17 @@ class Overview:
                 Session_state_variables.update_company_overview_session_state()
                 df_ovw = Session_state_dataframes.get_ovw_df_copy()
 
-                if all(x == '' for x in df_ovw['Description'].tolist()):
+                if all(x == ' ' for x in df_ovw['Description'].tolist()):
                     df_ovw = df_ovw.drop('Description', axis=1)
 
                 #standard extension
                 Percentages.ovw_as_percentage(df_ovw)
 
                 tabs = st.tabs(['Data', 'Dashboard'])
+
+                with st.sidebar:
+                    st.write('Company: ***' + st.session_state.company + '***')
+                    st.write('Version: ***' + st.session_state.history + '***')
 
                 with tabs[0]:
                     st.header(st.session_state.company + ' overview')
