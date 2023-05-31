@@ -5,8 +5,8 @@ import pandas as pd
 class ParseConfigFile:
 
     # Configuration_settings/RiskModel_ConfigurationFile.xlsx
-    config_file_sheet1 = pd.read_excel('Configuration_file/15M_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
-    config_file_sheet2 = pd.read_excel('Configuration_file/15M_ConfigurationFile.xlsx', sheet_name='ModelOverview')
+    config_file_sheet1 = pd.read_excel('Configuration_file/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
+    config_file_sheet2 = pd.read_excel('Configuration_file/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelOverview')
 
     #clean data
     score_columns = config_file_sheet1.columns[list(config_file_sheet1.columns).index('Question')+1:]
@@ -269,14 +269,14 @@ class ParseConfigFile:
         df['Description'] = [' ' if math.isnan(x) else x for x in df['Description'].tolist()]
 
         tab_dictionary = ParseConfigFile.get_tab_dictionary()
-        reversed_tab_dict = {name:number for number, name in tab_dictionary.items()}
 
         tabs_number_column = []
         tabs_names_column = []
-        for name in reversed_tab_dict.keys():
+        for number in tab_dictionary.keys():
 
-            tabs_names_column.append(name)
-            tabs_number_column.append((reversed_tab_dict[name]))
+            tabs_names_column.append(tab_dictionary[number])
+            tabs_number_column.append(number)
+
 
         if all(x == ' ' for x in df['Description'].tolist()):
 

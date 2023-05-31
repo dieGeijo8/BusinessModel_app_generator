@@ -71,7 +71,7 @@ class Set_start():
 
 if __name__ == "__main__":
 
-    config_file_sheet1 = pd.read_excel('Configuration_file/15M_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
+    config_file_sheet1 = pd.read_excel('Configuration_file/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
 
     number_of_pages = len(config_file_sheet1['Page'].unique())
     pages = [str(x + 1) for x in range(number_of_pages)]
