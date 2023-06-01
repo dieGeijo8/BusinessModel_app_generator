@@ -1,5 +1,5 @@
 import streamlit as st
-from Configuration_file.Configuration import return_model_full_descriptor_copy, pages_names
+from Configuration_file.Configuration import return_model_full_descriptor_copy, pages_names, get_page_title, get_page_text
 from Configuration_file.ParseConfigFile import ParseConfigFile
 from Questions_settings.Questions_settings import Questions_settings
 from PagesDisplay.Visualizations import Visualizations
@@ -26,7 +26,7 @@ class Page_display:
         st.write('')
 
         # barplot
-        st.subheader('Average stage value by tab')
+        st.subheader('Average stage value by section')
 
         bp = Visualizations.stages_barplot(page)
 
@@ -75,11 +75,12 @@ class Page_display:
                 with st.sidebar:
                     st.write('Company: ***' + st.session_state.company + '***')
                     st.write('Version: ***' + st.session_state.history + '***')
+                    st.image('Configuration_file/sc_logo.png', use_column_width=True)
 
                 with tabs[0]:
-                    st.header(pages_names[int(page) - 1])
 
-                    st.write('some text')
+                    st.header(get_page_title(pages_names[int(page) - 1]))
+                    st.markdown(get_page_text(pages_names[int(page) - 1]), unsafe_allow_html=True)
 
                 for tab, tab_widget in zip(local_model_full_descriptor[page].keys(), tabs[1:-1]):
                     with tab_widget:

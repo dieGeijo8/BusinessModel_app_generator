@@ -20,10 +20,10 @@ class Visualizations:
         df = Session_state_dataframes.get_df_page_visualizations(page)
 
         tab_dictionary = ParseConfigFile.get_tab_dictionary()
-        df['Tab name'] = [tab_dictionary[x] for x in df['Tab'].tolist()]
+        df['Section name'] = [tab_dictionary[x] for x in df['Section'].tolist()]
 
-        fig = px.line(df, x='Code', y='Stage', color='Tab', color_discrete_sequence=px.colors.qualitative.Vivid[:len(np.unique(df['Tab']).tolist())],
-                      hover_data=['Tab', 'Tab name'],
+        fig = px.line(df, x='Code', y='Stage', color='Section', color_discrete_sequence=px.colors.qualitative.Vivid[:len(np.unique(df['Section']).tolist())],
+                      hover_data=['Section', 'Section name'],
                       markers=True, labels={'Code': 'Question', 'Stage': 'Value'})#dict(IDs='Question code'))
 
         fig.update_layout(xaxis=dict(ticklabelstep=100, tickfont=dict(size=1), showgrid= True, tickangle=-45))
@@ -41,27 +41,27 @@ class Visualizations:
         df = Session_state_dataframes.get_df_page_visualizations(page)
 
         #grouped df
-        sub_df = df[['Tab', 'Stage']]
-        grouped_df = sub_df.groupby('Tab').mean().round(1)
+        sub_df = df[['Section', 'Stage']]
+        grouped_df = sub_df.groupby('Section').mean().round(1)
         grouped_df.reset_index(inplace=True)
 
         #to ensure the right order after the df manipulation
-        grouped_df['Tab'] = [int(x[2:]) for x in grouped_df['Tab'].tolist()]
-        grouped_df = grouped_df.sort_values(by=['Tab'])
-        grouped_df['Tab'] = grouped_df['Tab'].astype('category')
+        grouped_df['Section'] = [int(x[2:]) for x in grouped_df['Section'].tolist()]
+        grouped_df = grouped_df.sort_values(by=['Section'])
+        grouped_df['Section'] = grouped_df['Section'].astype('category')
 
         tab_dictionary = ParseConfigFile.get_tab_dictionary()
-        grouped_df['Tab name'] = [tab_dictionary[x] for x in np.unique(df['Tab'].tolist())]
+        grouped_df['Section name'] = [tab_dictionary[x] for x in np.unique(df['Section'].tolist())]
 
         #figure
-        fig = px.bar(grouped_df, x='Tab', y='Stage', color='Tab',
-                     color_discrete_sequence=px.colors.qualitative.Vivid[:len(np.unique(sub_df['Tab']).tolist())],
-                     hover_data=['Tab name'],
+        fig = px.bar(grouped_df, x='Section', y='Stage', color='Section',
+                     color_discrete_sequence=px.colors.qualitative.Vivid[:len(np.unique(sub_df['Section']).tolist())],
+                     hover_data=['Section name'],
                      labels={'Stage': 'Average value'})
 
         fig.update_traces(width=0.5, showlegend=False)
-        fig.update_layout(xaxis=dict(tickvals=grouped_df['Tab'].tolist(),
-                                     ticktext=[str(x) for x in grouped_df['Tab'].tolist()]))
+        fig.update_layout(xaxis=dict(tickvals=grouped_df['Section'].tolist(),
+                                     ticktext=[str(x) for x in grouped_df['Section'].tolist()]))
         fig.update_layout(yaxis=dict(tickvals=[1, 2, 3, 4, 5]))
         fig.update_layout(bargap=0.5, yaxis_range=[0, 5.5])
 
@@ -150,19 +150,19 @@ class Visualizations:
         Percentages.percentages_for_visualizations_firstmethod(df_ovw)
 
         # otherwise the radial axis is not recognized as categoric - 'bug'
-        df_ovw['Page'] = [x[:1] for x in df_ovw['Tab number'].to_list()]
+        df_ovw['Page'] = [x[:1] for x in df_ovw['Section number'].to_list()]
         subset_df_ovw = df_ovw.loc[df_ovw['Page'] == page_selected]
 
         tab_dictionary = ParseConfigFile.get_tab_dictionary()
-        subset_df_ovw['Tab name'] = [tab_dictionary[x] for x in subset_df_ovw['Tab number'].tolist()]
+        subset_df_ovw['Section name'] = [tab_dictionary[x] for x in subset_df_ovw['Section number'].tolist()]
 
-        subset_df_ovw['Tab number'] = [str(x).replace('.', '_') for x in subset_df_ovw['Tab number']]
+        subset_df_ovw['Section number'] = [str(x).replace('.', '_') for x in subset_df_ovw['Section number']]
 
 
         fig = go.Figure()
         Plan.ovw_radarchart_plan(fig, subset_df_ovw)
-        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Current'].tolist(), theta=subset_df_ovw['Tab number'].tolist(), name='Current',
-                                      customdata=subset_df_ovw['Tab name'].tolist(),
+        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Current'].tolist(), theta=subset_df_ovw['Section number'].tolist(), name='Current',
+                                      customdata=subset_df_ovw['Section name'].tolist(),
                                       fill='toself',
                                       line_color='#42A7B3'))
 

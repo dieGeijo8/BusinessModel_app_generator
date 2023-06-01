@@ -98,6 +98,7 @@ class Overview:
                 with st.sidebar:
                     st.write('Company: ***' + st.session_state.company + '***')
                     st.write('Version: ***' + st.session_state.history + '***')
+                    st.image('Configuration_file/sc_logo.png', use_column_width=True)
 
                 with tabs[0]:
                     st.header(st.session_state.company + ' overview')
@@ -119,7 +120,7 @@ class Overview:
 
                             # if the tab is different from the tab of the previous row I am changing page so
                             # I print the correspondant df part and the next part header
-                        elif df_ovw.loc[j, 'Tab number'][:1] != df_ovw.loc[j - 1, 'Tab number'][:1]:
+                        elif df_ovw.loc[j, 'Section number'][:1] != df_ovw.loc[j - 1, 'Section number'][:1]:
 
                             st.dataframe(df_ovw.iloc[start:j])
 
@@ -155,7 +156,7 @@ class Overview:
                     st.write('')
                     st.write('')
 
-                    st.subheader('Average score by tab')
+                    st.subheader('Average score by section')
 
                     col1, col2 = st.columns([1, 4])
 

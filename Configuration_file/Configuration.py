@@ -31,3 +31,13 @@ def return_model_full_descriptor_copy():
 @st.cache_data
 def return_model_ovw_descriptor_copy():
     return model_ovw_descriptor.copy()
+
+
+
+@st.cache_data
+def get_page_title(page):
+    return ParseConfigFile.get_page_title(page)
+
+@st.cache_data
+def get_page_text(page):
+    return ParseConfigFile.get_page_text(page)

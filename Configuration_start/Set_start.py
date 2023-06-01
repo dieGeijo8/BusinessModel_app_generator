@@ -14,7 +14,7 @@ class Set_start():
         workbook = openpyxl.load_workbook(Set_start.config_file)
         sheets = workbook.sheetnames
 
-        if sheets != ['ModelQuestions', 'ModelOverview']:
+        if sheets != ['ModelQuestions', 'ModelOverview', 'ModelText']:
             return 1
 
         config_file_sheet1 = pd.read_excel(Set_start.config_file,
@@ -23,10 +23,10 @@ class Set_start():
                                            sheet_name='ModelOverview')
 
         # columns names check
-        if any(i != j for i, j in zip(config_file_sheet1.columns[:4], ['Page', 'Tab', 'Subsection', 'Question'])):
+        if any(i != j for i, j in zip(config_file_sheet1.columns[:4], ['Page', 'Section', 'Subsection', 'Question'])):
             return 1
 
-        if any(i != j for i, j in zip(config_file_sheet2.columns, ['Page', 'Tab', 'Description', 'Tab weight', 'Page weight'])):
+        if any(i != j for i, j in zip(config_file_sheet2.columns, ['Page', 'Section', 'Description', 'Section weight', 'Page weight'])):
             return 1
 
         # null page check
@@ -41,7 +41,7 @@ class Set_start():
                     return 1
 
         # null tab check
-        for x, y in zip(config_file_sheet1['Tab'].tolist(), config_file_sheet2['Tab'].tolist()):
+        for x, y in zip(config_file_sheet1['Section'].tolist(), config_file_sheet2['Section'].tolist()):
 
             if isinstance(x, float):
                 if math.isnan(x):
@@ -66,9 +66,9 @@ class Set_start():
             print('Page persistency problem.')
             return 1
 
-        if any(i not in np.unique(config_file_sheet2['Tab'].tolist()) or j not in np.unique(config_file_sheet1['Tab'].tolist())
+        if any(i not in np.unique(config_file_sheet2['Section'].tolist()) or j not in np.unique(config_file_sheet1['Section'].tolist())
                for i, j in
-               zip(np.unique(config_file_sheet1['Tab'].tolist()), np.unique(config_file_sheet2['Tab'].tolist()))):
+               zip(np.unique(config_file_sheet1['Section'].tolist()), np.unique(config_file_sheet2['Section'].tolist()))):
 
             print('Tab persistency problem.')
             return 1

@@ -119,8 +119,8 @@ class Plan:
     @plan_decorator
     @staticmethod
     def ovw_radarchart_plan(fig, subset_df_ovw):
-        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Plan'].tolist(), theta=subset_df_ovw['Tab number'].tolist(), name='Plan',
-                                      customdata=subset_df_ovw['Tab name'].tolist(),
+        fig.add_trace(go.Scatterpolar(r=subset_df_ovw['Plan'].tolist(), theta=subset_df_ovw['Section number'].tolist(), name='Plan',
+                                      customdata=subset_df_ovw['Section name'].tolist(),
                                       fill='toself',
                                       line_color='#FFC000'))
 

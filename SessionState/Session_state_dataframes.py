@@ -43,11 +43,11 @@ class Session_state_dataframes:
 
 
         page_data['Code'] = tab_plus_question_codes
-        page_data['Tab'] = tabs
+        page_data['Section'] = tabs
 
         return pd.DataFrame.from_dict(page_data)
 
-    #get the updated ovw df with the following columns - 'Tab', 'Description', 'Current', 'Plan', and eventually 'Weight'
+    #get the updated ovw df with the following columns - 'Section', 'Description', 'Current', 'Plan', and eventually 'Weight'
     @staticmethod
     def get_ovw_df_copy():
         # get the ovw part that doesn't change - tab + description
@@ -63,7 +63,7 @@ class Session_state_dataframes:
         Ideas.add_ideas_to_ovw(df_ovw)
 
         # reorder columns
-        ordered_columns_list = ['Tab number', 'Tab', 'Description', 'Current']
+        ordered_columns_list = ['Section number', 'Section', 'Description', 'Current']
 
         # standard extensions
         Plan.add_plan_to_column_list(ordered_columns_list)

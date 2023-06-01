@@ -4,9 +4,12 @@ import pandas as pd
 
 class ParseConfigFile:
 
+    config_file = 'Configuration_file/RiskModel_ConfigurationFile.xlsx'
+
     # Configuration_settings/RiskModel_ConfigurationFile.xlsx
-    config_file_sheet1 = pd.read_excel('Configuration_file/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelQuestions')
-    config_file_sheet2 = pd.read_excel('Configuration_file/RiskModel_ConfigurationFile.xlsx', sheet_name='ModelOverview')
+    config_file_sheet1 = pd.read_excel(config_file, sheet_name='ModelQuestions')
+    config_file_sheet2 = pd.read_excel(config_file, sheet_name='ModelOverview')
+    config_file_sheet3 = pd.read_excel(config_file, sheet_name='ModelText')
 
     #clean data
     score_columns = config_file_sheet1.columns[list(config_file_sheet1.columns).index('Question')+1:]
@@ -41,14 +44,14 @@ class ParseConfigFile:
 
         df_page = ParseConfigFile.config_file_sheet1[ParseConfigFile.config_file_sheet1['Page'] == page_name]
 
-        tabs = list(df_page['Tab'].unique())
+        tabs = list(df_page['Section'].unique())
 
         return tabs
 
     @staticmethod
     def get_questions_by_tab(page_name, tab_name):
         df_tab = ParseConfigFile.config_file_sheet1[(ParseConfigFile.config_file_sheet1['Page'] == page_name)
-                                                    & (ParseConfigFile.config_file_sheet1['Tab'] == tab_name)]
+                                                    & (ParseConfigFile.config_file_sheet1['Section'] == tab_name)]
 
         subsections = list(df_tab['Question'].unique())
 
@@ -57,7 +60,7 @@ class ParseConfigFile:
     @staticmethod
     def get_stage_descriptions_by_question(page_name, tab_name, question):
         df_question = ParseConfigFile.config_file_sheet1[(ParseConfigFile.config_file_sheet1['Page'] == page_name)
-                                                           & (ParseConfigFile.config_file_sheet1['Tab'] == tab_name)
+                                                           & (ParseConfigFile.config_file_sheet1['Section'] == tab_name)
                                                            & (ParseConfigFile.config_file_sheet1['Question'] == question)]
 
         stages = []
@@ -72,7 +75,7 @@ class ParseConfigFile:
     def get_subsections_by_tab(page_name, tab_name):
 
         df_tab = ParseConfigFile.config_file_sheet1[(ParseConfigFile.config_file_sheet1['Page'] == page_name)
-                                                    & (ParseConfigFile.config_file_sheet1['Tab'] == tab_name)]
+                                                    & (ParseConfigFile.config_file_sheet1['Section'] == tab_name)]
 
         subsections = list(df_tab['Subsection'].unique())
 
@@ -82,7 +85,7 @@ class ParseConfigFile:
     def get_questions_by_subsection(page_name, tab_name, subsection_name):
 
         df_subsection = ParseConfigFile.config_file_sheet1[(ParseConfigFile.config_file_sheet1['Page'] == page_name)
-                                                           & (ParseConfigFile.config_file_sheet1['Tab'] == tab_name)
+                                                           & (ParseConfigFile.config_file_sheet1['Section'] == tab_name)
                                                            & (ParseConfigFile.config_file_sheet1['Subsection'] == subsection_name)]
 
         questions = df_subsection['Question'].tolist()
@@ -286,7 +289,7 @@ class ParseConfigFile:
             descriptions_column = list(np.unique(df['Description'].tolist()))
 
 
-        ovw_df = pd.DataFrame.from_dict({'Tab number': tabs_number_column, 'Tab': tabs_names_column, 'Description': descriptions_column})
+        ovw_df = pd.DataFrame.from_dict({'Section number': tabs_number_column, 'Section': tabs_names_column, 'Description': descriptions_column})
         return ovw_df
 
 
@@ -297,7 +300,7 @@ class ParseConfigFile:
 
         df = ParseConfigFile.config_file_sheet2.copy()
 
-        tab_weigths_list = df['Tab weight'].tolist()
+        tab_weigths_list = df['Section weight'].tolist()
 
         return tab_weigths_list
 
@@ -315,6 +318,22 @@ class ParseConfigFile:
 
         pages = ParseConfigFile.get_pages_list()
         return dict(zip(pages, page_weights_list))
+
+
+
+    @staticmethod
+    def get_page_title(page):
+
+        page_title = ParseConfigFile.config_file_sheet3['Title'][ParseConfigFile.config_file_sheet3['Page'] == page].tolist()[0]
+
+        return page_title
+
+    @staticmethod
+    def get_page_text(page):
+
+        page_text = ParseConfigFile.config_file_sheet3['Text'][ParseConfigFile.config_file_sheet3['Page'] == page].tolist()[0]
+
+        return page_text
 
 
 

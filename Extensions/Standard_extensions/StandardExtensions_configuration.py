@@ -37,7 +37,7 @@ class StandardExtensions_configuration:
         Weights_per_tab.set()
 
         if st.session_state.default_activate_tab_weights == True:
-            st.checkbox('Tab weights extension', value=st.session_state.default_activate_tab_weights, key='tab_weights_extension')
+            st.checkbox('Section weights extension', value=st.session_state.default_activate_tab_weights, key='tab_weights_extension')
 
         if st.session_state.default_activate_page_weights == True:
             st.checkbox('Page weights extension', value=st.session_state.default_activate_page_weights, key='page_weights_extension')

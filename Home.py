@@ -1,5 +1,6 @@
 import time
 import streamlit as st
+from Configuration_file.Configuration import get_page_title, get_page_text
 from SessionState.Session_state_variables import Session_state_variables
 from DataManagement.DataManagement import DataManagement
 from Thread_safety.ThreadSafety import ThreadSafety
@@ -171,7 +172,19 @@ if __name__ == "__main__":
 
     if authentication_status == True:
 
-        st.write('Welcome to the home page')
+        col1, col2 = st.columns([3, 1])
+
+        with col1:
+
+            st.header(get_page_title('Home'))
+        with col2:
+
+            st.image('Configuration_file/sc_logo.png', use_column_width=True)
+
+
+        st.button(label='Logout', on_click=callback_logout)
+
+        st.markdown(get_page_text('Home'), unsafe_allow_html=True)
 
         user_rights = Users.get_user_rights(username)
 
@@ -182,19 +195,19 @@ if __name__ == "__main__":
 
             with col1:
 
-                st.selectbox('Select the company you want to analyze.', options=st.session_state.company_list,
+                st.selectbox('Select a company.', options=st.session_state.company_list,
                              index=st.session_state.first_selectbox_value,
                              on_change=callback_selectbox, key='selectbox_value')
 
             with col2:
 
-                st.selectbox('Do you want to explore an old version?', options=st.session_state.company_history,
+                st.selectbox('Explore an old assessment?', options=st.session_state.company_history,
                              index=st.session_state.company_history.index(st.session_state.history),
                              on_change=callback_selectbox_history, key='history_select_box_value')
 
             with col3:
 
-                st.selectbox('Overwrite or save as new version?', options=['Overwrite', 'Save as new'],
+                st.selectbox('Overwrite or save as new?', options=['Overwrite', 'Save as new'],
                              index=st.session_state.selected_mode,
                              on_change=callback_mode, key='mode_selectbox')
 
@@ -212,13 +225,13 @@ if __name__ == "__main__":
 
             with col1:
 
-                st.selectbox('Do you want to explore an old version?', options=st.session_state.company_history,
+                st.selectbox('Explore an old assessment?', options=st.session_state.company_history,
                              index=st.session_state.company_history.index(st.session_state.history),
                              on_change=callback_selectbox_history, key='history_select_box_value')
 
             with col2:
 
-                st.selectbox('Overwrite or save as new version?', options=['Overwrite', 'Save as new'],
+                st.selectbox('Overwrite or save as new?', options=['Overwrite', 'Save as new'],
                              index=st.session_state.selected_mode,
                              on_change=callback_mode, key='mode_selectbox')
 
@@ -227,8 +240,6 @@ if __name__ == "__main__":
         st.button('Submit data', on_click=DataManagement.submit_button, disabled=st.session_state.dont_display_data)
 
         ThreadSafety.lock_warning_display()
-
-        st.button(label='Logout', on_click=callback_logout)
 
     elif authentication_status == None:
 
