@@ -16,7 +16,6 @@ class Plan:
         if 'activate_plan' not in st.session_state:
             st.session_state.activate_plan = False
 
-    #activate_plan = st.session_state.activate_plan
 
     #very simple support method for divider display
     @staticmethod
