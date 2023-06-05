@@ -127,7 +127,15 @@ def set_company(company):
     #     Session_state_variables.initialize_company_session_state()
     #     Session_state_variables.initialize_company_overview_session_state()
 
+def callback_submit_button():
 
+    # submit company data
+    DataManagement.submit_button()
+
+    # reset company to no selection - especially to release the lock
+    st.session_state.first_selectbox_value = st.session_state.company_list.index('')
+
+    st.experimental_rerun()
 
 def callback_logout():
 
@@ -237,7 +245,7 @@ if __name__ == "__main__":
 
 
 
-        st.button('Submit data', on_click=DataManagement.submit_button, disabled=st.session_state.dont_display_data)
+        st.button('Submit data', on_click=callback_submit_button, disabled=st.session_state.dont_display_data)
 
         ThreadSafety.lock_warning_display()
 
