@@ -169,91 +169,96 @@ def callback_mode():
 
 if __name__ == "__main__":
 
-    if 'webapp_initialized' not in st.session_state:
-        st.session_state.webapp_initialized = 1
-        Session_state_variables.initialize_webapp_sessionstate()
+    try:
 
-    aut = Users.user_authentication()
-    authenticator, authentication_status, name, username = aut[0], aut[1], aut[2], aut[3]
+        if 'webapp_initialized' not in st.session_state:
+            st.session_state.webapp_initialized = 1
+            Session_state_variables.initialize_webapp_sessionstate()
 
-    st.session_state.authentication_status = authentication_status
+        aut = Users.user_authentication()
+        authenticator, authentication_status, name, username = aut[0], aut[1], aut[2], aut[3]
 
-    if authentication_status == True:
+        st.session_state.authentication_status = authentication_status
 
-        col1, col2 = st.columns([3, 1])
+        if authentication_status == True:
 
-        with col1:
-
-            st.header(get_page_title('Home'))
-        with col2:
-
-            st.image('Configuration_file/sc_logo.png', use_column_width=True)
-
-
-        st.button(label='Logout', on_click=callback_logout)
-
-        st.markdown(get_page_text('Home'), unsafe_allow_html=True)
-
-        user_rights = Users.get_user_rights(username)
-
-
-        if user_rights == 'admin':
-
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns([3, 1])
 
             with col1:
 
-                st.selectbox('Select a company.', options=st.session_state.company_list,
-                             index=st.session_state.first_selectbox_value,
-                             on_change=callback_selectbox, key='selectbox_value')
-
+                st.header(get_page_title('Home'))
             with col2:
 
-                st.selectbox('Explore an old assessment?', options=st.session_state.company_history,
-                             index=st.session_state.company_history.index(st.session_state.history),
-                             on_change=callback_selectbox_history, key='history_select_box_value')
-
-            with col3:
-
-                st.selectbox('Overwrite or save as new?', options=['Overwrite', 'Save as new'],
-                             index=st.session_state.selected_mode,
-                             on_change=callback_mode, key='mode_selectbox')
-
-            with st.expander('Do you want to register a new company?'):
-
-                    company_registration_form()
-
-        elif user_rights == 'normal':
-
-            user_company = Users.get_user_company(username)
-
-            set_company(user_company)
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                st.selectbox('Explore an old assessment?', options=st.session_state.company_history,
-                             index=st.session_state.company_history.index(st.session_state.history),
-                             on_change=callback_selectbox_history, key='history_select_box_value')
-
-            with col2:
-
-                st.selectbox('Overwrite or save as new?', options=['Overwrite', 'Save as new'],
-                             index=st.session_state.selected_mode,
-                             on_change=callback_mode, key='mode_selectbox')
+                st.image('Configuration_file/sc_logo.png', use_column_width=True)
 
 
+            st.button(label='Logout', on_click=callback_logout)
 
-        st.button('Submit data', on_click=callback_submit_button, disabled=st.session_state.dont_display_data)
+            st.markdown(get_page_text('Home'), unsafe_allow_html=True)
 
-        ThreadSafety.lock_warning_display()
+            user_rights = Users.get_user_rights(username)
 
-    elif authentication_status == None:
 
-        st.warning('Please enter your username and password.')
+            if user_rights == 'admin':
 
-    elif authentication_status == False:
+                col1, col2, col3 = st.columns(3)
 
-        st.error('Username or password is incorrect.')
+                with col1:
 
+                    st.selectbox('Select a company.', options=st.session_state.company_list,
+                                 index=st.session_state.first_selectbox_value,
+                                 on_change=callback_selectbox, key='selectbox_value')
+
+                with col2:
+
+                    st.selectbox('Explore an old assessment?', options=st.session_state.company_history,
+                                 index=st.session_state.company_history.index(st.session_state.history),
+                                 on_change=callback_selectbox_history, key='history_select_box_value')
+
+                with col3:
+
+                    st.selectbox('Overwrite or save as new?', options=['Overwrite', 'Save as new'],
+                                 index=st.session_state.selected_mode,
+                                 on_change=callback_mode, key='mode_selectbox')
+
+                with st.expander('Do you want to register a new company?'):
+
+                        company_registration_form()
+
+            elif user_rights == 'normal':
+
+                user_company = Users.get_user_company(username)
+
+                set_company(user_company)
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+
+                    st.selectbox('Explore an old assessment?', options=st.session_state.company_history,
+                                 index=st.session_state.company_history.index(st.session_state.history),
+                                 on_change=callback_selectbox_history, key='history_select_box_value')
+
+                with col2:
+
+                    st.selectbox('Overwrite or save as new?', options=['Overwrite', 'Save as new'],
+                                 index=st.session_state.selected_mode,
+                                 on_change=callback_mode, key='mode_selectbox')
+
+
+
+            st.button('Submit data', on_click=callback_submit_button, disabled=st.session_state.dont_display_data)
+
+            ThreadSafety.lock_warning_display()
+
+        elif authentication_status == None:
+
+            st.warning('Please enter your username and password.')
+
+        elif authentication_status == False:
+
+            st.error('Username or password is incorrect.')
+
+    except:
+
+        st.warning('An error occured. Please go back to the home page and reload the web app.')
