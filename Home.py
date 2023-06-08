@@ -171,6 +171,9 @@ if __name__ == "__main__":
 
     try:
 
+        with st.sidebar:
+            st.image('Configuration_file/sc_logo.png', use_column_width=True)
+
         if 'webapp_initialized' not in st.session_state:
             st.session_state.webapp_initialized = 1
             Session_state_variables.initialize_webapp_sessionstate()
