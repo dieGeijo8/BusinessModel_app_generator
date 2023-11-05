@@ -4,7 +4,7 @@ import pandas as pd
 
 class ParseConfigFile:
 
-    config_file = 'Configuration_file/RiskModel_ConfigurationFile.xlsx'
+    config_file = 'Configuration_file/Exampleconfigurationfile.xlsx'
 
     # Configuration_settings/RiskModel_ConfigurationFile.xlsx
     config_file_sheet1 = pd.read_excel(config_file, sheet_name='ModelQuestions')
