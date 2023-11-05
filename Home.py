@@ -171,9 +171,6 @@ if __name__ == "__main__":
 
     try:
 
-        with st.sidebar:
-            st.image('Configuration_file/sc_logo.png', use_column_width=True)
-
         if 'webapp_initialized' not in st.session_state:
             st.session_state.webapp_initialized = 1
             Session_state_variables.initialize_webapp_sessionstate()
@@ -185,15 +182,7 @@ if __name__ == "__main__":
 
         if authentication_status == True:
 
-            col1, col2 = st.columns([3, 1])
-
-            with col1:
-
-                st.header(get_page_title('Home'))
-            with col2:
-
-                st.image('Configuration_file/sc_logo.png', use_column_width=True)
-
+            st.header(get_page_title('Home'))
 
             st.button(label='Logout', on_click=callback_logout)
 
