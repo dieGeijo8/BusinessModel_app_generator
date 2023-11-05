@@ -1,5 +1,5 @@
 # Generator of streamlit web apps for maturity assessments
-This programs allows to generate a complete streamlit web app for business maturity assessments. 
+This program allows to generate a complete streamlit web app for business maturity assessments. 
 The generated web applications are multipage web applications that allow to collect and display real time updated data. The web applications provide user-authentication and data persistency. The data inserted is stored in a Firestore DB.
 
 To create a web application you need to:
